@@ -5,16 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>45th Parallel - Drug Kingpin Simulator</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .nav-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav-buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .nav-buttons button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
   <div class="game-container">
-    <nav style="text-align:center; margin-bottom: 20px;">
-      <a href="index.html">Home</a> |
-      <a href="craft.html">Craft</a> |
-      <a href="shop.html">Shop</a> |
-      <a href="npc.html">NPCs</a> |
-      <a href="missions.html">Missions</a>
-    </nav>
+    <div class="nav-buttons">
+      <button onclick="location.href='index.html'">Home</button>
+      <button onclick="location.href='craft.html'">Craft</button>
+      <button onclick="location.href='shop.html'">Shop</button>
+      <button onclick="location.href='npc.html'">NPCs</button>
+      <button onclick="location.href='missions.html'">Missions</button>
+    </div>
 
     <header class="panel player-stats">
       <h1>45th Parallel</h1>
@@ -39,7 +57,7 @@
       <button id="fight-btn">Fight</button>
       <button id="pickpocket-btn">Pickpocket</button>
       <button id="mission-btn">Complete Mission</button>
-            <button id="save-btn">Save Game</button>
+      <button id="save-btn">Save Game</button>
       <button id="load-btn">Load Game</button>
     </section>
 
