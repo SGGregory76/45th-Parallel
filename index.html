@@ -1,53 +1,69 @@
-<div class="game-container">
-  <h1>45th Parallel</h1>
-
-  <!-- Player Stats Display -->
-  <div class="player-stats">
-    <p>Wealth: $<span id="wealth">1000</span></p>
-    <p>Reputation: <span id="reputation">50</span></p>
-    <p>Mood: <span id="mood">neutral</span></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>45th Parallel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <h1>45th Parallel</h1>
+    
+    <!-- Player Stats -->
+    <div class="player-stats">
+      <p>Wealth: $<span id="wealth">1000</span></p>
+      <p>Reputation: <span id="reputation">50</span></p>
+      <p>Mood: <span id="mood">neutral</span></p>
+    </div>
+    
+    <!-- Inventory Panel for Crafted Drugs -->
+    <div class="inventory-panel">
+      <h2>Crafted Inventory</h2>
+      <div id="inventory-items"></div>
+    </div>
+    
+    <!-- Raw Resources Panel -->
+    <div class="resources-panel">
+      <h2>Raw Resources</h2>
+      <div id="resource-display"></div>
+      <!-- Note: Resource acquisition is now objective based -->
+    </div>
+    
+    <!-- Crafting Panel -->
+    <div class="crafting-panel">
+      <h2>Mix Drugs</h2>
+      <input type="text" id="strain-name" placeholder="Enter strain name (optional)">
+      <button onclick="mixDrugs()">Mix 2 Different Drugs</button>
+    </div>
+    
+    <!-- Action Panel for Combat & Pickpocket & Mission -->
+    <div class="action-panel">
+      <button onclick="fight()">Fight</button>
+      <button onclick="pickpocket()">Pickpocket</button>
+      <button onclick="completeMission()">Complete Mission</button>
+      <button onclick="saveGame()">Save Game</button>
+      <button onclick="loadGame()">Load Game</button>
+    </div>
+    
+    <!-- Market Panel -->
+    <div class="market-panel">
+      <h2>Market</h2>
+      <div id="market"></div>
+    </div>
+    
+    <!-- NPC Interactions -->
+    <div class="npc-panel">
+      <h2>NPC Interactions</h2>
+      <div id="npc-list"></div>
+    </div>
+    
+    <!-- Event Log -->
+    <div class="log-panel">
+      <h2>Event Log</h2>
+      <div id="log"></div>
+    </div>
   </div>
-
-  <!-- Inventory Panel for Crafted Drugs -->
-  <div class="inventory-panel">
-    <h2>Crafted Inventory</h2>
-    <div id="inventory-items"></div>
-  </div>
-
-  <!-- Raw Resources Panel -->
-  <div class="resources-panel">
-    <h2>Raw Resources</h2>
-    <div id="resource-display"></div>
-    <!-- Note: Resource generation is no longer on-click -->
-  </div>
-
-  <!-- Crafting Panel -->
-  <div class="crafting-panel">
-    <h2>Mix Drugs</h2>
-    <input
-      type="text"
-      id="strain-name"
-      placeholder="Enter strain name (optional)"
-    />
-    <button onclick="mixDrugs()">Mix 2 Different Drugs</button>
-  </div>
-
-  <!-- Action Panel for Combat & Pickpocket -->
-  <div class="action-panel">
-    <button onclick="fight()">Fight</button>
-    <button onclick="pickpocket()">Pickpocket</button>
-    <button onclick="saveGame()">Save Game</button>
-    <button onclick="loadGame()">Load Game</button>
-  </div>
-
-  <!-- Market Panel -->
-  <div class="market-panel">
-    <h2>Market</h2>
-    <div id="market"></div>
-  </div>
-
-  <!-- NPC Interactions -->
-  <div class="npc-panel">
-    <h2>NPC Interactions</h2>
-    <div id="npc-list"></div>
-  </div>
+  <script src="script.js"></script>
+</body>
+</html>
