@@ -8,11 +8,20 @@
 </head>
 <body>
   <div class="game-container">
+    <nav style="text-align:center; margin-bottom: 20px;">
+      <a href="index.html">Home</a> |
+      <a href="craft.html">Craft</a> |
+      <a href="shop.html">Shop</a> |
+      <a href="npc.html">NPCs</a> |
+      <a href="missions.html">Missions</a>
+    </nav>
+
     <header class="panel player-stats">
       <h1>45th Parallel</h1>
       <p>Wealth: $<span id="wealth">1000</span></p>
       <p>Reputation: <span id="reputation">50</span></p>
       <p>Mood: <span id="mood">neutral</span></p>
+      <p>XP: <span id="experience">0</span> | Level: <span id="level">1</span></p>
     </header>
 
     <section class="panel inventory-panel">
@@ -23,17 +32,6 @@
     <section class="panel resources-panel">
       <h2>Raw Resources</h2>
       <div id="resource-display"></div>
-    </section>
-
-    <section class="panel shop-panel">
-      <h2>Resource Shop</h2>
-      <div id="shop-buttons"></div>
-    </section>
-
-    <section class="panel crafting-panel">
-      <h2>Mix Drugs</h2>
-      <input type="text" id="strain-name" placeholder="Enter strain name (optional)">
-      <div id="craft-buttons"></div>
     </section>
 
     <section class="panel action-panel">
@@ -51,7 +49,7 @@
     </section>
 
     <section class="panel npc-panel">
-      <h2>NPC Interactions</h2>
+      <h2>Dynamic NPC Encounters</h2>
       <div id="npc-list"></div>
     </section>
 
@@ -59,13 +57,3 @@
       <h2>Sell Drugs</h2>
       <div id="sell-buttons"></div>
     </section>
-
-    <section class="panel log-panel">
-      <h2>Event Log</h2>
-      <div id="log" class="log-box"></div>
-    </section>
-  </div>
-
-  <script src="script.js" defer></script>
-</body>
-</html>
