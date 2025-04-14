@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craft | 45th Parallel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <header class="panel player-stats">
+      <h1>Craft Drugs</h1>
+      <p>Wealth: $<span id="wealth">0</span></p>
+      <p>Reputation: <span id="reputation">0</span></p>
+      <p>Mood: <span id="mood">neutral</span></p>
+      <p><a href="index.html" style="color:#0ff">Back to Main</a></p>
+    </header>
+
+    <section class="panel resources-panel">
+      <h2>Available Resources</h2>
+      <div id="resource-display"></div>
+    </section>
+
+    <section class="panel crafting-panel">
+      <h2>Drug Mixing</h2>
+      <input type="text" id="strain-name" placeholder="Enter strain name (optional)">
+      <div id="craft-buttons"></div>
+    </section>
+
+    <section class="panel inventory-panel">
+      <h2>Your Crafted Products</h2>
+      <div id="inventory-items" class="inventory-items"></div>
+    </section>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
