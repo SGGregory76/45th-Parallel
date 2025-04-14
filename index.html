@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>45th Parallel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <h1>45th Parallel</h1>
+    <div class="stats">
+      <p>Cash: $<span id="cash">100</span></p>
+      <p>Reputation: <span id="rep">0</span></p>
+      <p>Heat: <span id="heat">0</span></p>
+    </div>
+
+    <div class="inventory">
+      <h2>Inventory</h2>
+      <div class="inventory-grid">
+        <button onclick="selectItem('weed')">Weed</button>
+        <button onclick="selectItem('lsd')">LSD</button>
+        <button onclick="selectItem('cocaine')">Cocaine</button>
+      </div>
+      <p>Selected: <span id="selectedItem">None</span></p>
+      <input id="strainName" placeholder="Name your strain..." />
+      <button onclick="craftStrain()">Craft New Drug</button>
+    </div>
+
+    <div class="actions">
+      <h2>Street Actions</h2>
+      <button onclick="fightNPC()">Fight NPC</button>
+      <button onclick="pickpocket()">Pickpocket</button>
+    </div>
+
+    <div class="log">
+      <h2>Event Log</h2>
+      <div id="logBox"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
 
