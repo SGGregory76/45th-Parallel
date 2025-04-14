@@ -1,316 +1,259 @@
-// ---- GLOBAL GAME STATE ----
-let player = {
-    reputation: 50,
-    wealth: 1000,
-    mood: "neutral",
-    // Crafted products inventory (final products after mixing)
-    inventory: {
-        craftedDrugs: [] // Each item: { name, baseTypes, potency }
-    },
-    // Raw resources available for mixing. Values represent available units.
-    resources: {
-        marijuana: 5,
-        cocaine: 3,
-        lsd: 2,
-        oxytocin: 2
-    }
+// ----- GLOBAL STATE -----
+const player = {
+  reputation: 50,
+  wealth: 1000,
+  mood: "neutral",
+  inventory: [],
+  resources: {
+    seeds: 5,
+    water: 5,
+    fertilizer: 5,
+    cocaLeaves: 3,
+    cocaineChemicals: 2,
+    lsdChemicals: 1,
+    adderallPrecursors: 1,
+    oxytocinPrecursors: 1
+  }
 };
 
-// Example factions (for NPC effects)
-let factions = {
-    Suppliers: 50,
-    Cartel: 50,
-    Police: 50
+const market = {
+  marijuana: 10,
+  cocaine: 20,
+  lsd: 50,
+  oxytocin: 30
 };
 
-const eventLog = [];
-let objectives = {
-    firstMix: false
+const resourceCosts = {
+  seeds: 5,
+  water: 2,
+  fertilizer: 3,
+  cocaLeaves: 10,
+  cocaineChemicals: 15,
+  lsdChemicals: 20,
+  adderallPrecursors: 25,
+  oxytocinPrecursors: 18
 };
 
-// ---- UTILITY FUNCTIONS ----
-function updateEventLog(message) {
-    eventLog.push(message);
-    const logDiv = document.getElementById('log');
-    logDiv.innerHTML = eventLog.map(entry => `<div class="log-entry">${entry}</div>`).join('');
-    logDiv.scrollTop = logDiv.scrollHeight;
+const drugRecipes = {
+  Marijuana: ["seeds", "water", "fertilizer"],
+  Cocaine: ["cocaLeaves", "cocaineChemicals"],
+  LSD: ["lsdChemicals", "water"],
+  Adderall: ["adderallPrecursors", "water"],
+  Oxytocin: ["oxytocinPrecursors", "fertilizer"]
+};
+
+const npcList = [
+  { name: "Carlos", type: "Supplier", behavior: "supportive" },
+  { name: "Diana", type: "Rival", behavior: "aggressive" },
+  { name: "Officer John", type: "Cop", behavior: "punishing" },
+  { name: "Lana", type: "Dealer", behavior: "neutral" },
+  { name: "Smokey", type: "Junkie", behavior: "desperate" }
+];
+
+let eventLog = [];
+let dayCounter = 0;
+
+// ----- DOM UPDATES -----
+function updateStats() {
+  document.getElementById("wealth").textContent = player.wealth;
+  document.getElementById("reputation").textContent = player.reputation;
+  document.getElementById("mood").textContent = player.mood;
 }
 
-function updateInventoryUI() {
-    // Display the crafted inventory items
-    const invDiv = document.getElementById('inventory-items');
-    if (player.inventory.craftedDrugs.length === 0) {
-        invDiv.innerHTML = "<p>No crafted drugs yet.</p>";
-    } else {
-        invDiv.innerHTML = player.inventory.craftedDrugs.map((item, index) => {
-            return `<div class="inventory-item">
-                      <strong>${item.name}</strong><br>
-                      Base: ${item.baseTypes.join(' + ')}<br>
-                      Potency: ${item.potency}
-                    </div>`;
-        }).join('');
-    }
+function updateLog(message) {
+  eventLog.push(message);
+  const logBox = document.getElementById("log");
+  logBox.innerHTML = eventLog.slice(-50).map(msg => `<div class='log-entry'>${msg}</div>`).join('');
+  logBox.scrollTop = logBox.scrollHeight;
 }
 
-function updateResourceUI() {
-    const resDiv = document.getElementById('resource-display');
-    resDiv.innerHTML = `
-        <div class="resource-item">Marijuana: ${player.resources.marijuana}</div>
-        <div class="resource-item">Cocaine: ${player.resources.cocaine}</div>
-        <div class="resource-item">LSD: ${player.resources.lsd}</div>
-        <div class="resource-item">Oxytocin: ${player.resources.oxytocin}</div>
-    `;
+function renderInventory() {
+  const container = document.getElementById("inventory-items");
+  container.innerHTML = player.inventory.map(d =>
+    `<div class='inventory-item'><strong>${d.name}</strong><br>Type: ${d.type}<br>Potency: ${d.potency}</div>`
+  ).join('');
 }
 
-function updatePlayerStatsUI() {
-    document.getElementById('wealth').textContent = player.wealth;
-    document.getElementById('reputation').textContent = player.reputation;
-    document.getElementById('mood').textContent = player.mood;
+function renderResources() {
+  const container = document.getElementById("resource-display");
+  container.innerHTML = Object.entries(player.resources).map(([k,v]) =>
+    `<div class='resource-item'>${k}: ${v}</div>`).join('');
 }
 
-// ---- MIXING SYSTEM WITH RANDOM EFFECTS ----
-// This function checks if the player has at least 2 different types of drugs available.
-// If so, it randomly selects 2 distinct types (or you might extend it by letting the player choose)
-// then applies random effects.
-function mixDrugs() {
-    // Get list of raw resource types with at least 1 unit available
-    const availableTypes = Object.keys(player.resources).filter(type => player.resources[type] > 0);
-    
-    // Require at least two different types
-    if (availableTypes.length < 2) {
-        updateEventLog("Not enough distinct resources to mix drugs. Gather more raw drugs through objectives.");
-        return;
-    }
-    
-    // For this mix, randomly choose 2 distinct types:
-    let shuffled = availableTypes.sort(() => 0.5 - Math.random());
-    const mixTypes = shuffled.slice(0,2);
-
-    // Ensure required quantity for mixing is met (assume 1 unit of each is needed)
-    if (player.resources[mixTypes[0]] < 1 || player.resources[mixTypes[1]] < 1) {
-        updateEventLog("Not enough resources of one or more types to mix.");
-        return;
-    }
-    
-    // Deduct 1 unit from each type
-    player.resources[mixTypes[0]]--;
-    player.resources[mixTypes[1]]--;
-    
-    // Randomize effect on crafted drug:
-    // Base potency is set as the sum of a base value plus a random bonus from 0 to 5.
-    let basePotency = 10;
-    let potencyBonus = Math.floor(Math.random() * 6);
-    let finalPotency = basePotency + potencyBonus;
-    
-    // Randomize a suffix for the new strain, or let the player input a name
-    let customName = document.getElementById('strain-name').value;
-    if (!customName) {
-        customName = prompt("Enter a name for your new drug strain:", "Hybrid Mix");
-    }
-    let craftedName = customName || "Hybrid Mix";
-    
-    // Apply random effects on NPCs and player:
-    // Three possible outcomes: success, neutral, failure.
-    let outcomeRand = Math.random();
-    let npcEffect = 0, playerEffect = 0;
-    if (outcomeRand < 0.33) {
-        // Positive outcome
-        npcEffect = 10; // improves faction reputation with Suppliers, for example
-        playerEffect = 200; // bonus wealth reward from a brilliant mix
-        updateEventLog("Mixing outcome: SUCCESS! Your blend is exceptional.");
-    } else if (outcomeRand < 0.66) {
-        // Neutral outcome
-        npcEffect = 0;
-        playerEffect = 0;
-        updateEventLog("Mixing outcome: NEUTRAL. The product is average.");
-    } else {
-        // Negative outcome
-        npcEffect = -10;
-        playerEffect = -100; // you lose some wealth because the mix was subpar
-        finalPotency = Math.max(5, finalPotency - 5); // reduce potency
-        updateEventLog("Mixing outcome: FAILURE. The blend is poor quality.");
-    }
-    
-    // Apply effects on player's stats:
-    player.wealth += playerEffect;
-    player.reputation += npcEffect;
-    
-    // Create the crafted product and add to inventory
-    const newDrug = {
-        name: craftedName,
-        baseTypes: mixTypes,
-        potency: finalPotency
-    };
-    player.inventory.craftedDrugs.push(newDrug);
-    
-    // Check if this is the first mix and reward an objective bonus
-    if (!objectives.firstMix) {
-        objectives.firstMix = true;
-        // Reward: extra raw resource units (objective-based generation)
-        player.resources.marijuana += 2;
-        player.resources.cocaine += 1;
-        updateEventLog("Objective complete: First successful mix! Bonus resources acquired.");
-    }
-    
-    // Update all UI
-    updateInventoryUI();
-    updateResourceUI();
-    updatePlayerStatsUI();
+function renderShop() {
+  const container = document.getElementById("shop-buttons");
+  container.innerHTML = Object.entries(resourceCosts).map(([r, cost]) =>
+    `<button onclick="buyResource('${r}')">Buy ${r} ($${cost})</button>`
+  ).join('');
 }
 
-// ---- OBJECTIVE SYSTEM -----
-// Here, resource generation from clicks is disabled; instead, rewards come from achieving objectives such as a successful mix.
-// Additional objective functions can be added here.
+function renderCraftButtons() {
+  const container = document.getElementById("craft-buttons");
+  container.innerHTML = Object.keys(drugRecipes).map(drug =>
+    `<button onclick="mixDrug('${drug}')">Mix ${drug}</button>`
+  ).join('');
+}
 
+function renderSellButtons() {
+  const container = document.getElementById("sell-buttons");
+  container.innerHTML = player.inventory.map((item, i) =>
+    `<button onclick="sellDrug(${i})">Sell ${item.name} ($${item.potency * 3})</button>`
+  ).join('');
+}
 
-// ---- NPC BEHAVIOR TREES ----
-// Enhanced NPC interactions with three outcomes from each interaction
+function renderNPCs() {
+  const container = document.getElementById("npc-list");
+  container.innerHTML = npcList.map(n =>
+    `<div class='npc-box'><strong>${n.name}</strong><br>(${n.type})<br><button onclick="npcInteract('${n.name}')">Interact</button></div>`
+  ).join('');
+}
+
+function renderMarket() {
+  const container = document.getElementById("market");
+  container.innerHTML = Object.entries(market).map(([k,v]) =>
+    `<div class='market-item'>${k}: $${v}</div>`).join('');
+}
+
+// ----- GAME LOGIC -----
+function buyResource(type) {
+  if (player.wealth >= resourceCosts[type]) {
+    player.wealth -= resourceCosts[type];
+    player.resources[type]++;
+    updateLog(`Bought 1 ${type}`);
+    updateStats();
+    renderResources();
+  } else {
+    updateLog(`Not enough money for ${type}`);
+  }
+}
+
+function mixDrug(type) {
+  const recipe = drugRecipes[type];
+  const canCraft = recipe.every(r => player.resources[r] >= 1);
+  if (!canCraft) {
+    updateLog(`Not enough ingredients to mix ${type}`);
+    return;
+  }
+  recipe.forEach(r => player.resources[r]--);
+  const potency = Math.floor(Math.random() * 10) + 10;
+  const nameInput = document.getElementById("strain-name").value || `${type} Mix`;
+  const drug = { name: nameInput, type, potency };
+  player.inventory.push(drug);
+  updateLog(`Mixed ${type}: ${nameInput} (Potency ${potency})`);
+  renderInventory();
+  renderResources();
+  renderSellButtons();
+}
+
+function sellDrug(index) {
+  const drug = player.inventory[index];
+  const value = drug.potency * 3;
+  player.wealth += value;
+  updateLog(`Sold ${drug.name} for $${value}`);
+  player.inventory.splice(index, 1);
+  renderInventory();
+  updateStats();
+  renderSellButtons();
+}
+
 function npcInteract(name) {
-    const npc = npcList.find(npc => npc.name === name);
-    if (!npc) return;
-    
-    // Outcome: success, neutral, failure based on random roll and NPC type
-    let outcome;
-    let r = Math.random();
-    if (npc.type === "Supplier") {
-        // Suppliers are generally friendly
-        outcome = (r < 0.6) ? "success" : (r < 0.85 ? "neutral" : "failure");
-    } else if (npc.type === "Rival") {
-        outcome = (r < 0.3) ? "success" : (r < 0.6 ? "neutral" : "failure");
-    } else if (npc.type === "Cop") {
-        outcome = (r < 0.4) ? "success" : (r < 0.7 ? "neutral" : "failure");
-    } else {
-        outcome = "neutral";
-    }
-    
-    let message = `${npc.name} (${npc.type}) interaction: `;
-    if (outcome === "success") {
-        player.reputation += 10;
-        player.wealth += 150;
-        message += "SUCCESS! You benefit from a favorable deal.";
-    } else if (outcome === "neutral") {
-        message += "NEUTRAL outcome. No significant change.";
-    } else {
-        player.reputation -= 5;
-        player.wealth = Math.max(0, player.wealth - 100);
-        message += "FAILURE! The interaction cost you.";
-    }
-    
-    updateEventLog(message);
+  const npc = npcList.find(n => n.name === name);
+  const roll = Math.random();
+  let message = `${npc.name} (${npc.type}) interaction: `;
+  if (roll < 0.33) {
+    player.reputation += 5;
+    message += "SUCCESS! Reputation increased.";
+  } else if (roll < 0.66) {
+    message += "Neutral outcome.";
+  } else {
+    player.reputation -= 5;
+    message += "FAILURE! Reputation decreased.";
+  }
+  updateLog(message);
+  updateStats();
 }
 
-// ---- COMBAT AND PICKPOCKETING WITH THREE OUTCOMES ----
 function fight() {
-    let r = Math.random();
-    let outcome;
-    if (r < 0.4) outcome = "success";
-    else if (r < 0.7) outcome = "neutral";
-    else outcome = "failure";
-    
-    let message = "Fight outcome: ";
-    if (outcome === "success") {
-        let gain = 200;
-        player.wealth += gain;
-        message += `SUCCESS! Gained $${gain}.`;
-    } else if (outcome === "neutral") {
-        message += "Neutral, no change.";
-    } else {
-        let loss = 150;
-        player.wealth = Math.max(0, player.wealth - loss);
-        message += `FAILURE! Lost $${loss}.`;
-    }
-    updateEventLog(message);
+  const roll = Math.random();
+  if (roll < 0.4) {
+    player.wealth += 200;
+    updateLog("Fight won! $200 gained.");
+  } else if (roll < 0.7) {
+    updateLog("Fight was a draw.");
+  } else {
+    player.wealth = Math.max(0, player.wealth - 150);
+    updateLog("Fight lost. Lost $150.");
+  }
+  updateStats();
 }
 
 function pickpocket() {
-    let r = Math.random();
-    let outcome;
-    if (r < 0.5) outcome = "success";
-    else if (r < 0.8) outcome = "neutral";
-    else outcome = "failure";
-    
-    let message = "Pickpocket outcome: ";
-    if (outcome === "success") {
-        let gain = 150;
-        player.wealth += gain;
-        message += `SUCCESS! Gained $${gain}.`;
-    } else if (outcome === "neutral") {
-        message += "Neutral, no effect.";
-    } else {
-        let loss = 75;
-        player.wealth = Math.max(0, player.wealth - loss);
-        message += `FAILURE! Lost $${loss}.`;
-    }
-    updateEventLog(message);
+  const roll = Math.random();
+  if (roll < 0.5) {
+    player.wealth += 150;
+    updateLog("Pickpocket successful. $150 gained.");
+  } else {
+    player.wealth = Math.max(0, player.wealth - 75);
+    updateLog("Pickpocket failed. Lost $75.");
+  }
+  updateStats();
 }
 
-// ---- MARKET SIMULATION (Three Outcomes) ----
-function triggerMarketEvent() {
-    let r = Math.random();
-    if (r < 0.33) {
-        // Positive: Market boom
-        market.marijuana += 5;
-        market.cocaine += 5;
-        market.lsd += 10;
-        market.oxytocin += 5;
-        updateEventLog("Market boom! Prices have risen.");
-    } else if (r < 0.66) {
-        updateEventLog("Market remains stable.");
-    } else {
-        // Negative: Market crash
-        market.marijuana = Math.max(1, market.marijuana - 5);
-        market.cocaine = Math.max(1, market.cocaine - 5);
-        market.lsd = Math.max(1, market.lsd - 10);
-        market.oxytocin = Math.max(1, market.oxytocin - 5);
-        updateEventLog("Market crash! Prices have dropped.");
-    }
-    updateMarket();
+function completeMission() {
+  player.resources.seeds += 2;
+  player.resources.water += 1;
+  player.wealth += 100;
+  updateLog("Mission complete! +2 seeds, +1 water, +$100");
+  renderResources();
+  updateStats();
 }
 
-// ---- TIME-BASED GAME LOOP ----
-function simulateDay() {
-    dayCounter++;
-    updateEventLog(`Day ${dayCounter}: New day dawns...`);
-    triggerMarketEvent();
-    // Random NPC interaction event chance:
-    if (Math.random() < 0.3) {
-        const randNpc = npcList[Math.floor(Math.random() * npcList.length)];
-        npcInteract(randNpc.name);
-    }
-}
-setInterval(simulateDay, 20000); // Every 20 seconds, a new day is simulated.
-
-// ---- SAVE & LOAD SYSTEM ----
 function saveGame() {
-    const gameState = { player, market, dayCounter, eventLog };
-    localStorage.setItem("drugSimSave", JSON.stringify(gameState));
-    updateEventLog("Game saved.");
+  const state = { player, eventLog, dayCounter };
+  localStorage.setItem("45thSave", JSON.stringify(state));
+  updateLog("Game saved.");
 }
 
 function loadGame() {
-    const state = JSON.parse(localStorage.getItem("drugSimSave"));
-    if (state) {
-        player = state.player;
-        market = state.market;
-        dayCounter = state.dayCounter;
-        eventLog.length = 0;
-        eventLog.push(...state.eventLog);
-        updateEventLog("Game loaded.");
-        updateInventoryUI();
-        updateResourceUI();
-        updateMarket();
-    } else {
-        updateEventLog("No saved game found.");
-    }
+  const saved = JSON.parse(localStorage.getItem("45thSave"));
+  if (!saved) return;
+  Object.assign(player, saved.player);
+  eventLog = saved.eventLog;
+  dayCounter = saved.dayCounter;
+  updateLog("Game loaded.");
+  updateStats();
+  renderResources();
+  renderInventory();
+  renderSellButtons();
 }
 
-// ---- INITIALIZATION ----
-function initializeGame() {
-    // Initialize crafted inventory if not present
-    if (!player.inventory.craftedDrugs) player.inventory.craftedDrugs = [];
-    updateInventoryUI();
-    updateResourceUI();
-    updateMarket();
-    updateEventLog("Game Started: Welcome to 45th Parallel. Build your empire!");
+function simulateDay() {
+  dayCounter++;
+  updateLog(`Day ${dayCounter} begins.`);
+  if (Math.random() < 0.5) {
+    const npc = npcList[Math.floor(Math.random() * npcList.length)];
+    npcInteract(npc.name);
+  }
+  renderMarket();
 }
-window.onload = initializeGame;
+
+// ----- INIT -----
+document.addEventListener("DOMContentLoaded", () => {
+  updateStats();
+  renderResources();
+  renderInventory();
+  renderShop();
+  renderCraftButtons();
+  renderSellButtons();
+  renderNPCs();
+  renderMarket();
+  updateLog("Welcome to 45th Parallel!");
+
+  document.getElementById("fight-btn").addEventListener("click", fight);
+  document.getElementById("pickpocket-btn").addEventListener("click", pickpocket);
+  document.getElementById("mission-btn").addEventListener("click", completeMission);
+  document.getElementById("save-btn").addEventListener("click", saveGame);
+  document.getElementById("load-btn").addEventListener("click", loadGame);
+
+  setInterval(simulateDay, 30000);
+});
