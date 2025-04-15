@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>45th Parallel - Drug Kingpin Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .nav-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .nav-buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .nav-buttons button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="nav-buttons">
+      <button onclick="location.href='index.html'">Home</button>
+      <button onclick="location.href='craft.html'">Craft</button>
+      <button onclick="location.href='shop.html'">Shop</button>
+      <button onclick="location.href='npc.html'">NPCs</button>
+      <button onclick="location.href='missions.html'">Missions</button>
+    </div>
+
+    <header class="panel player-stats">
+      <h1>45th Parallel</h1>
+      <p>Wealth: $<span id="wealth">1000</span></p>
+      <p>Reputation: <span id="reputation">50</span></p>
+      <p>Mood: <span id="mood">neutral</span></p>
+      <p>XP: <span id="experience">0</span> | Level: <span id="level">1</span></p>
+    </header>
+
+    <section class="panel inventory-panel">
+      <h2>Crafted Products</h2>
+      <div id="inventory-items" class="inventory-items"></div>
+    </section>
+
+    <section class="panel resources-panel">
+      <h2>Raw Resources</h2>
+      <div id="resource-display"></div>
+    </section>
+
+    <section class="panel action-panel">
+      <h2>Actions</h2>
+      <button id="fight-btn">Fight</button>
+      <button id="pickpocket-btn">Pickpocket</button>
+      <button id="mission-btn">Complete Mission</button>
+      <button id="save-btn">Save Game</button>
+      <button id="load-btn">Load Game</button>
+    </section>
+
+    <section class="panel market-panel">
+      <h2>Market</h2>
+      <div id="market"></div>
+    </section>
+
+    <section class="panel npc-panel">
+      <h2>Dynamic NPC Encounters</h2>
+      <div id="npc-list"></div>
+    </section>
+
+    <section class="panel sell-panel">
+      <h2>Sell Drugs</h2>
+      <div id="sell-buttons"></div>
+    </section>
+
+    <section class="panel log-panel">
+      <h2>Event Log</h2>
+      <div id="log" class="log-box"></div>
+    </section>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
