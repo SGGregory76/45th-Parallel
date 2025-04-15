@@ -276,6 +276,10 @@ function loadGame() {
   renderInventory();
   renderSellButtons();
 }
+function saveGame() {
+  const state = { player, eventLog, dayCounter };
+  localStorage.setItem("45thSave", JSON.stringify(state));
+}
 
 // Init
 window.addEventListener("DOMContentLoaded", () => {
