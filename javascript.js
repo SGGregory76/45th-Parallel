@@ -51,9 +51,14 @@ const npcList = [
   { name: "Lana", type: "Dealer", behavior: "neutral" },
   { name: "Smokey", type: "Junkie", behavior: "desperate" }
 ];
-
-let eventLog = [];
-let dayCounter = 0;
+function loadGame() {
+  const state = JSON.parse(localStorage.getItem("45thSave"));
+  if (state) {
+    Object.assign(player, state.player);
+    eventLog = state.eventLog || [];
+    dayCounter = state.dayCounter || 0;
+  }
+}
 
 // Utility Functions
 function updateStats() {
