@@ -55,6 +55,17 @@ function changeEnergy(amount) {
   gameData.energy += amount;
   if (gameData.energy > 100) gameData.energy = 100;
   if (gameData.energy < 0) gameData.energy = 0;
+
+  function incrementActionCounter() {
+  let count = parseInt(localStorage.getItem("actionCount") || "0");
+  count++;
+  localStorage.setItem("actionCount", count);
+
+  if (count % 10 === 0) { // every 10 actions = switch time
+    toggleDayNight();
+  }
+}
+
   saveGame();
 }
 
