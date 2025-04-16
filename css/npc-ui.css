@@ -1,0 +1,49 @@
+
+/* NPC UI Styles for 45th Parallel */
+
+#npc-profile {
+  text-align: center;
+  padding: 10px;
+  background: #1c1c1c;
+  border: 2px solid #333;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+#npc-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #555;
+  margin-bottom: 10px;
+}
+#npc-profile h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+#npc-profile p {
+  font-size: 13px;
+  color: #ccc;
+  margin: 4px 0;
+}
+#npc-actions {
+  margin-top: 10px;
+}
+#npc-actions button {
+  margin: 4px;
+  padding: 8px 12px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+#npc-actions button:hover {
+  background: #666;
+}
+#npc-response {
+  margin-top: 10px;
+  font-style: italic;
+  color: #aaa;
+}
