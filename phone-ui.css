@@ -1,0 +1,59 @@
+
+/* Phone UI Styles for 45th Parallel */
+
+#phone-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+#phone-screen {
+  width: 360px;
+  background: #1a1a1a;
+  border: 6px solid #333;
+  border-radius: 30px;
+  box-shadow: 0 0 10px #000;
+  color: #eee;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#phone-header {
+  background: #000;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #222;
+}
+#game-content {
+  flex-grow: 1;
+  padding: 15px;
+  font-size: 14px;
+}
+#game-content button {
+  margin: 6px 0;
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+}
+#game-content button:hover {
+  background: #444;
+}
+#phone-footer {
+  background: #111;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  border-top: 2px solid #222;
+}
+#phone-footer button {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
