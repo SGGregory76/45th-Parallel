@@ -1,0 +1,61 @@
+<div id="phone-wrapper">
+  <div id="phone-screen">
+    <div id="phone-header">Character Selection</div>
+
+    <div id="game-content">
+      <h3>Start Your Hustle</h3>
+      <p>You live out of a broken-down car. No money. No future. Just you and a burner phone.</p>
+      <p>Who are you?</p>
+
+      <div style="display:flex; justify-content:space-around; margin-top:15px;">
+        <div>
+          <img src="https://i.imgur.com/7zQj1iI.png" alt="Man" style="width:80px; border-radius:50%;"><br>
+          <button onclick="selectCharacter('man')">Choose Man</button>
+        </div>
+        <div>
+          <img src="https://i.imgur.com/A8FZbHM.png" alt="Woman" style="width:80px; border-radius:50%;"><br>
+          <button onclick="selectCharacter('woman')">Choose Woman</button>
+        </div>
+      </div>
+
+      <div id="log" style="margin-top:15px;"></div>
+    </div>
+
+    <div id="phone-footer">
+      <button disabled>Home</button>
+      <button disabled>Street</button>
+      <button disabled>Bag</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game Engine Load -->
+<script src="https://yourusername.github.io/45th-parallel-game/js/game-engine.js"></script>
+
+<!-- Character Setup Script -->
+<script>
+function selectCharacter(gender) {
+  const avatar = gender === "man"
+    ? "https://i.imgur.com/7zQj1iI.png"
+    : "https://i.imgur.com/A8FZbHM.png";
+
+  const gameData = {
+    cash: 0,
+    heat: 0,
+    rep: 0,
+    energy: 100,
+    inventory: ['1x Weak Weed (Starter)'],
+    npcReputations: {},
+    avatar: avatar,
+    gender: gender,
+    introComplete: true
+  };
+
+  localStorage.setItem("gameData", JSON.stringify(gameData));
+  document.getElementById("log").innerHTML = `You chose the ${gender}. Your hustle begins...`;
+
+  setTimeout(() => {
+    location.href = '/p/home-base.html'; // Change to your actual home base URL
+  }, 2000);
+}
+</script>
