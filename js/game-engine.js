@@ -66,3 +66,4 @@ function getNPCRep(npc) {
 document.addEventListener("DOMContentLoaded", () => {
   updateUI();
 });
+<link rel="stylesheet" href="https://yourusername.github.io/45th-parallel-game/css/npc-ui.css">
