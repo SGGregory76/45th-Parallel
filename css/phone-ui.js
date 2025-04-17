@@ -39,6 +39,22 @@
     </div>
   </div>
 </div>
+<div id="craftingPanel" style="display:none;">
+  <h4>Crafting Lab</h4>
+  <div style="margin-bottom:10px;">
+    <span onclick="selectIngredient('🌿')" style="cursor:pointer;">🌿</span>
+    <span onclick="selectIngredient('💊')" style="cursor:pointer;">💊</span>
+    <span onclick="selectIngredient('⚗️')" style="cursor:pointer;">⚗️</span>
+    <span onclick="selectIngredient('💉')" style="cursor:pointer;">💉</span>
+    <span onclick="selectIngredient('🔫')" style="cursor:pointer;">🔫</span>
+    <span onclick="selectIngredient('⚙️')" style="cursor:pointer;">⚙️</span>
+  </div>
+  <div>
+    Selected: <span id="selectedItems"></span>
+  </div>
+  <button onclick="craftItem()">Synthesize</button>
+  <div id="craftResult" style="margin-top:10px;"></div>
+</div>
 
 <style>
   body {
