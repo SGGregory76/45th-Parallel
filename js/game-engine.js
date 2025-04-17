@@ -72,6 +72,54 @@ function changeEnergy(amount) {
 function getNPCRep(npc) {
   return gameData.npcReputations[npc] || 0;
 }
+let ingredients = [];
+
+function selectIngredient(icon) {
+  if (ingredients.length < 2) {
+    ingredients.push(icon);
+    document.getElementById('selectedItems').textContent = ingredients.join(" + ");
+  }
+}
+
+function craftItem() {
+  const resultBox = document.getElementById('craftResult');
+  const combo = ingredients.join("");
+
+  let result = "Unknown mix.";
+  if (combo === "🌿🌿") result = "Custom Strain Created!";
+  else if (combo === "🌿💊") result = "THC Capsule";
+  else if (combo === "⚗️💉") result = "Heroin";
+  else if (combo === "🔫⚙️") result = "Concealed Weapon";
+  else if (combo === "⚗️💊") result = "Designer Pill";
+
+  resultBox.innerHTML = `<strong>Result:</strong> ${result}`;
+  ingredients = [];
+  document.getElementById('selectedItems').textContent = "";
+}
+let ingredients = [];
+
+function selectIngredient(icon) {
+  if (ingredients.length < 2) {
+    ingredients.push(icon);
+    document.getElementById('selectedItems').textContent = ingredients.join(" + ");
+  }
+}
+
+function craftItem() {
+  const resultBox = document.getElementById('craftResult');
+  const combo = ingredients.join("");
+
+  let result = "Unknown mix.";
+  if (combo === "🌿🌿") result = "Custom Strain Created!";
+  else if (combo === "🌿💊") result = "THC Capsule";
+  else if (combo === "⚗️💉") result = "Heroin";
+  else if (combo === "🔫⚙️") result = "Concealed Weapon";
+  else if (combo === "⚗️💊") result = "Designer Pill";
+
+  resultBox.innerHTML = `<strong>Result:</strong> ${result}`;
+  ingredients = [];
+  document.getElementById('selectedItems').textContent = "";
+}
 
 // Auto update UI on script load
 document.addEventListener("DOMContentLoaded", () => {
