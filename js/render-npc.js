@@ -1,0 +1,1 @@
+checkMissionCompletion(npc);
