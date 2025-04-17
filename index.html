@@ -1,1 +1,43 @@
-<!-- index.html placeholder -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>45th Parallel - Burner OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="phone-ui">
+    <div class="phone-header">Burner OS</div>
+    <div class="app-grid">
+      <div class="app-icon" onclick="openApp('missions')">
+        <span class="icon">📋</span>
+        <span class="label">Missions</span>
+      </div>
+      <div class="app-icon" onclick="openApp('contacts')">
+        <span class="icon">👤</span>
+        <span class="label">Contacts</span>
+      </div>
+      <div class="app-icon" onclick="openApp('inventory')">
+        <span class="icon">🎒</span>
+        <span class="label">Inventory</span>
+      </div>
+      <div class="app-icon" onclick="openApp('craft')">
+        <span class="icon">⚗️</span>
+        <span class="label">Craft</span>
+      </div>
+      <div class="app-icon" onclick="openApp('map')">
+        <span class="icon">🗺️</span>
+        <span class="label">Map</span>
+      </div>
+      <div class="app-icon" onclick="openApp('log')">
+        <span class="icon">🧾</span>
+        <span class="label">Log</span>
+      </div>
+    </div>
+    <div id="appWindow" class="app-window">
+      <p>Select an app to begin.</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
