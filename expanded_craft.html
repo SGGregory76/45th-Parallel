@@ -1,0 +1,79 @@
+<!-- craft.html (Expanded Crafting System) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;max-width:320px;margin:auto;">
+  <h3 style="margin-top:0;">Crafting Lab</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+    <span onclick="selectIngredient('🌿')" style="cursor:pointer;">🌿</span>
+    <span onclick="selectIngredient('💊')" style="cursor:pointer;">💊</span>
+    <span onclick="selectIngredient('⚗️')" style="cursor:pointer;">⚗️</span>
+    <span onclick="selectIngredient('💉')" style="cursor:pointer;">💉</span>
+    <span onclick="selectIngredient('🔫')" style="cursor:pointer;">🔫</span>
+    <span onclick="selectIngredient('⚙️')" style="cursor:pointer;">⚙️</span>
+  </div>
+  <div><strong>Selected:</strong> <span id="selectedItems">None</span></div>
+  <button onclick="craftMix()" style="margin-top:10px;padding:8px;width:100%;background:#222;border:none;color:#fff;border-radius:6px;">Synthesize</button>
+  <div id="craftResult" style="margin-top:10px;font-size:0.9em;color:#ccc;"></div>
+</div>
+
+<script>
+let ingredients = [];
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+
+const recipes = {
+  "🌿🌿": { result: "Custom Strain", tier: "Common", tool: null, success: 1.0, xp: 5, rep: 1 },
+  "🌿💊": { result: "THC Capsule", tier: "Fine", tool: "⚗️", success: 0.9, xp: 7, rep: 2 },
+  "⚗️💉": { result: "Heroin", tier: "Rare", tool: "⚗️", success: 0.75, xp: 10, rep: 4 },
+  "🔫⚙️": { result: "Concealed Weapon", tier: "Fine", tool: null, success: 0.85, xp: 8, rep: 2 },
+  "⚗️💊": { result: "Designer Pill", tier: "Rare", tool: "⚗️", success: 0.65, xp: 12, rep: 5 }
+};
+
+function selectIngredient(icon) {
+  const resultBox = document.getElementById("craftResult");
+  resultBox.innerHTML = "";
+  if (ingredients.length >= 2) {
+    resultBox.innerHTML = "Only 2 ingredients allowed.";
+    return;
+  }
+  ingredients.push(icon);
+  document.getElementById("selectedItems").textContent = ingredients.join(" + ");
+}
+
+function craftMix() {
+  const resultBox = document.getElementById("craftResult");
+  if (ingredients.length < 2) {
+    resultBox.innerHTML = "Select two ingredients.";
+    return;
+  }
+
+  const combo = ingredients.join("");
+  const recipe = recipes[combo];
+  if (!recipe) {
+    resultBox.innerHTML = "Invalid combination.";
+    ingredients = [];
+    document.getElementById("selectedItems").textContent = "None";
+    return;
+  }
+
+  // Simulate success
+  const success = Math.random() <= recipe.success;
+  if (success) {
+    const quality = recipe.tier;
+    const item = `${quality} ${recipe.result}`;
+    inventory.push(item);
+    stats.xp += recipe.xp;
+    stats.rep += recipe.rep;
+    resultBox.innerHTML = `<strong>Success!</strong> Crafted: ${item}<br>+${recipe.xp} XP, +${recipe.rep} REP`;
+  } else {
+    resultBox.innerHTML = "<strong>Crafting failed.</strong> You lost the ingredients.";
+  }
+
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  localStorage.setItem("stats", JSON.stringify(stats));
+  ingredients = [];
+  document.getElementById("selectedItems").textContent = "None";
+}
+
+window.addEventListener("load", () => {
+  stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+});
+</script>
