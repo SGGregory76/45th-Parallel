@@ -1,0 +1,84 @@
+<!-- npc-trade.html (NPC Trade Interface) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;max-width:320px;margin:auto;">
+  <h3 style="margin-top:0;">Trade - Rico (Enforcer)</h3>
+  <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;background:#000;padding:6px;border-radius:10px;">
+    <div>💰 <span id="liveCash">$0</span></div>
+    <div>🎒 <span id="invCount">0 items</span></div>
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <strong>Buy:</strong>
+    <div id="buyList" style="padding-left:10px;"></div>
+  </div>
+
+  <div>
+    <strong>Sell:</strong>
+    <div id="sellList" style="padding-left:10px;"></div>
+  </div>
+</div>
+
+<script>
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+
+const buyItems = [
+  { name: "THC Capsule", price: 60 },
+  { name: "Designer Pill", price: 120 },
+  { name: "Concealed Weapon", price: 150 }
+];
+
+function updateTradeUI() {
+  document.getElementById("liveCash").textContent = "$" + stats.cash;
+  document.getElementById("invCount").textContent = inventory.length + " items";
+
+  let buyHTML = "";
+  buyItems.forEach(item => {
+    buyHTML += `${item.name} - $${item.price} <button onclick="buyItem('${item.name}', ${item.price})">Buy</button><br>`;
+  });
+
+  let sellHTML = "";
+  if (inventory.length === 0) {
+    sellHTML = "<em>No items to sell.</em>";
+  } else {
+    inventory.forEach((item, index) => {
+      sellHTML += `${item} - $${getSellPrice(item)} <button onclick="sellItem(${index})">Sell</button><br>`;
+    });
+  }
+
+  document.getElementById("buyList").innerHTML = buyHTML;
+  document.getElementById("sellList").innerHTML = sellHTML;
+}
+
+function getSellPrice(itemName) {
+  return Math.floor(itemName.includes("Rare") ? 90 : itemName.includes("Fine") ? 60 : 30);
+}
+
+function buyItem(name, price) {
+  if (stats.cash >= price) {
+    stats.cash -= price;
+    inventory.push(name);
+    saveAll();
+    updateTradeUI();
+    alert("Purchased: " + name);
+  } else {
+    alert("Not enough cash.");
+  }
+}
+
+function sellItem(index) {
+  const item = inventory[index];
+  const value = getSellPrice(item);
+  stats.cash += value;
+  inventory.splice(index, 1);
+  saveAll();
+  updateTradeUI();
+  alert("Sold: " + item);
+}
+
+function saveAll() {
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  localStorage.setItem("stats", JSON.stringify(stats));
+}
+
+window.addEventListener("load", updateTradeUI);
+</script>
