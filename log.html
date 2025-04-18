@@ -1,0 +1,29 @@
+<!-- log.html (Burner OS Event Log Page) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;">
+  <h3 style="margin-top:0;">System Log</h3>
+  <ul id="logList" style="padding-left:18px;"></ul>
+</div>
+
+<script>
+let logs = JSON.parse(localStorage.getItem("eventLog")) || [];
+
+function addLog(entry) {
+  const timestamp = new Date().toLocaleTimeString();
+  logs.unshift("[" + timestamp + "] " + entry);
+  localStorage.setItem("eventLog", JSON.stringify(logs));
+  renderLog();
+}
+
+function renderLog() {
+  const logList = document.getElementById("logList");
+  if (logs.length === 0) {
+    logList.innerHTML = "<li>No activity recorded yet.</li>";
+  } else {
+    logList.innerHTML = logs.map(log => "<li>" + log + "</li>").join("");
+  }
+}
+
+// Optional: trigger log entry from other pages by adding to localStorage and using addLog()
+
+window.addEventListener("load", renderLog);
+</script>
