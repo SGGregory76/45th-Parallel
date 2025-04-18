@@ -1,0 +1,38 @@
+<!-- Corner Hustle - Universal Stat & Inventory Engine -->
+<script>
+// Ensure core data exists
+if (!localStorage.getItem("stats")) {
+  localStorage.setItem("stats", JSON.stringify({ xp: 0, cash: 0, rep: 0 }));
+}
+if (!localStorage.getItem("inventory")) {
+  localStorage.setItem("inventory", JSON.stringify(["Cellphone", "Bag of Seeds"]));
+}
+
+// Load shared data
+let stats = JSON.parse(localStorage.getItem("stats"));
+let inventory = JSON.parse(localStorage.getItem("inventory"));
+
+// Save helper
+function saveGame() {
+  localStorage.setItem("stats", JSON.stringify(stats));
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+}
+
+// Update display (if present)
+function updateStatDisplay() {
+  if (document.getElementById('liveCash')) document.getElementById('liveCash').textContent = "$" + stats.cash;
+  if (document.getElementById('liveXP')) document.getElementById('liveXP').textContent = stats.xp + " XP";
+  if (document.getElementById('liveRep')) document.getElementById('liveRep').textContent = stats.rep + " REP";
+  if (document.getElementById('invCount')) document.getElementById('invCount').textContent = inventory.length + " items";
+}
+
+// Storage sync
+window.addEventListener("storage", () => {
+  stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+  inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+  updateStatDisplay();
+});
+
+// Initialize on load
+window.addEventListener("load", updateStatDisplay);
+</script>
