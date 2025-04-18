@@ -1,0 +1,42 @@
+<!-- inventory.html (Corner Hustle Inventory Page) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;max-width:320px;margin:auto;">
+  <h3 style="margin-top:0;">Inventory</h3>
+  <div id="invCount" style="margin-bottom:8px;">Loading...</div>
+  <ul id="invList" style="list-style:none;padding-left:0;"></ul>
+</div>
+
+<script>
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+function updateInventoryDisplay() {
+  const invList = document.getElementById("invList");
+  const invCount = document.getElementById("invCount");
+  invCount.textContent = "Items: " + inventory.length;
+
+  if (inventory.length === 0) {
+    invList.innerHTML = "<li><em>No items in inventory.</em></li>";
+    return;
+  }
+
+  invList.innerHTML = "";
+  inventory.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div style="background:#222;padding:8px;margin-bottom:6px;border-radius:8px;">
+        ${item} <br>
+        <button onclick="dropItem(${i})" style="margin-top:5px;">Drop</button>
+      </div>
+    `;
+    invList.appendChild(li);
+  });
+}
+
+function dropItem(index) {
+  const dropped = inventory.splice(index, 1);
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  updateInventoryDisplay();
+  alert("Dropped: " + dropped);
+}
+
+window.addEventListener("load", updateInventoryDisplay);
+</script>
