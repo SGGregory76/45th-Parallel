@@ -1,0 +1,62 @@
+<!-- Corner Hustle - Blogger-Safe Inventory Page -->
+<div style="max-width:320px;margin:0 auto;padding:10px;background:#121212;color:#fff;font-family:'Segoe UI',sans-serif;">
+  <h3 style="margin-top:0;">Inventory</h3>
+  <div style="font-size:13px;margin-bottom:8px;">
+    <strong>Items:</strong> <span id="invCount">0</span>
+  </div>
+  <ul id="invList" style="list-style:none;padding:0;"></ul>
+</div>
+
+<script>
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+function updateInventoryDisplay() {
+  const invList = document.getElementById("invList");
+  const invCount = document.getElementById("invCount");
+  invCount.textContent = inventory.length;
+  invList.innerHTML = "";
+
+  if (inventory.length === 0) {
+    invList.innerHTML = "<li style='padding:6px;color:#aaa;'>You have no items.</li>";
+    return;
+  }
+
+  inventory.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.style.marginBottom = "10px";
+
+    const card = document.createElement("div");
+    card.style.background = "#222";
+    card.style.padding = "8px";
+    card.style.borderRadius = "8px";
+
+    const itemText = document.createElement("div");
+    itemText.textContent = item;
+    itemText.style.marginBottom = "6px";
+
+    const btn = document.createElement("button");
+    btn.textContent = "Drop";
+    btn.style.padding = "5px 10px";
+    btn.style.fontSize = "12px";
+    btn.style.border = "none";
+    btn.style.borderRadius = "5px";
+    btn.style.background = "#444";
+    btn.style.color = "#fff";
+    btn.addEventListener("click", () => dropItem(index));
+
+    card.appendChild(itemText);
+    card.appendChild(btn);
+    li.appendChild(card);
+    invList.appendChild(li);
+  });
+}
+
+function dropItem(index) {
+  const removed = inventory.splice(index, 1)[0];
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  updateInventoryDisplay();
+  alert("You dropped: " + removed);
+}
+
+window.addEventListener("load", updateInventoryDisplay);
+</script>
