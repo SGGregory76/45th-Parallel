@@ -1,0 +1,30 @@
+<!-- map.html (Burner OS Map Page) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;">
+  <h3 style="margin-top:0;">City Map</h3>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+    <div style="background:#1e1e1e;padding:10px;border-radius:10px;text-align:center;cursor:pointer;" onclick="goToZone('Downtown')">
+      🏙️<br><small>Downtown</small>
+    </div>
+    <div style="background:#1e1e1e;padding:10px;border-radius:10px;text-align:center;cursor:pointer;" onclick="goToZone('Eastside')">
+      🏚️<br><small>Eastside</small>
+    </div>
+    <div style="background:#1e1e1e;padding:10px;border-radius:10px;text-align:center;cursor:pointer;" onclick="goToZone('Docks')">
+      ⚓<br><small>Docks</small>
+    </div>
+    <div style="background:#333;padding:10px;border-radius:10px;text-align:center;color:#888;">
+      ❌<br><small>??? (Locked)</small>
+    </div>
+  </div>
+  <div id="zoneResult" style="margin-top:15px;color:#ccc;font-size:0.9em;"></div>
+</div>
+
+<script>
+function goToZone(zone) {
+  const log = JSON.parse(localStorage.getItem("eventLog")) || [];
+  const timestamp = new Date().toLocaleTimeString();
+  const entry = "[" + timestamp + "] Visited " + zone;
+  log.unshift(entry);
+  localStorage.setItem("eventLog", JSON.stringify(log));
+  document.getElementById("zoneResult").innerHTML = "You traveled to <strong>" + zone + "</strong>.";
+}
+</script>
