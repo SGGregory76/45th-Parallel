@@ -1,0 +1,38 @@
+<!-- Corner Hustle - Burner OS Blogger Interface -->
+<div style="max-width:320px;margin:20px auto;padding:15px;border:2px solid #444;border-radius:20px;background:#111;color:#fff;font-family:'Segoe UI',sans-serif;">
+  <div style="text-align:center;font-weight:bold;font-size:18px;margin-bottom:10px;">
+    Corner Hustle OS
+  </div>
+
+  <!-- Stat Bar -->
+  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;padding:6px 12px;background:#000;border-radius:10px;">
+    <div>💰 <span id="liveCash">$0</span></div>
+    <div>⭐ <span id="liveXP">0 XP</span></div>
+    <div>🏆 <span id="liveRep">0 REP</span></div>
+  </div>
+
+  <!-- App Links -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;margin-bottom:15px;">
+    <a href="/p/missions.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">📋<div style="font-size:12px;color:#ccc;">Missions</div></a>
+    <a href="/p/contacts.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">👤<div style="font-size:12px;color:#ccc;">Contacts</div></a>
+    <a href="/p/inventory.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">🎒<div style="font-size:12px;color:#ccc;">Inventory</div></a>
+    <a href="/p/craft.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">⚗️<div style="font-size:12px;color:#ccc;">Craft</div></a>
+    <a href="/p/map.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">🗺️<div style="font-size:12px;color:#ccc;">Map</div></a>
+    <a href="/p/log.html" style="background:#222;padding:12px;border-radius:12px;text-decoration:none;color:white;display:block;">🧾<div style="font-size:12px;color:#ccc;">Log</div></a>
+  </div>
+</div>
+
+<script>
+// Stat Tracker (Live Across Pages)
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+function updateStats() {
+  document.getElementById('liveCash').textContent = "$" + stats.cash;
+  document.getElementById('liveXP').textContent = stats.xp + " XP";
+  document.getElementById('liveRep').textContent = stats.rep + " REP";
+}
+window.addEventListener("load", updateStats);
+window.addEventListener("storage", () => {
+  stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+  updateStats();
+});
+</script>
