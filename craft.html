@@ -1,0 +1,57 @@
+<!-- craft.html (Burner OS Crafting Page) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;">
+  <h3 style="margin-top:0;">Crafting Lab</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+    <span onclick="selectIngredient('🌿')" style="cursor:pointer;">🌿</span>
+    <span onclick="selectIngredient('💊')" style="cursor:pointer;">💊</span>
+    <span onclick="selectIngredient('⚗️')" style="cursor:pointer;">⚗️</span>
+    <span onclick="selectIngredient('💉')" style="cursor:pointer;">💉</span>
+    <span onclick="selectIngredient('🔫')" style="cursor:pointer;">🔫</span>
+    <span onclick="selectIngredient('⚙️')" style="cursor:pointer;">⚙️</span>
+  </div>
+  <div><strong>Selected:</strong> <span id="selectedItems">None</span></div>
+  <button onclick="craftMix()" style="margin-top:10px;padding:8px;width:100%;background:#222;border:none;color:#fff;border-radius:6px;">Synthesize</button>
+  <div id="craftResult" style="margin-top:10px;font-size:0.9em;color:#ccc;"></div>
+</div>
+
+<script>
+let ingredients = [];
+let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+
+function selectIngredient(icon) {
+  const resultBox = document.getElementById('craftResult');
+  resultBox.innerHTML = "";
+  if (ingredients.length >= 2) {
+    resultBox.innerHTML = "Only 2 items max.";
+    return;
+  }
+  ingredients.push(icon);
+  document.getElementById('selectedItems').textContent = ingredients.join(" + ");
+}
+
+function craftMix() {
+  const resultBox = document.getElementById('craftResult');
+  if (ingredients.length < 2) {
+    resultBox.innerHTML = "Pick two ingredients.";
+    return;
+  }
+
+  const combo = ingredients.join("");
+  let result = "Unknown Substance";
+
+  if (combo === "🌿🌿") result = "Custom Strain";
+  else if (combo === "🌿💊") result = "THC Capsule";
+  else if (combo === "⚗️💉") result = "Heroin";
+  else if (combo === "🔫⚙️") result = "Concealed Weapon";
+  else if (combo === "⚗️💊") result = "Designer Pill";
+
+  if (result !== "Unknown Substance") {
+    inventory.push(result);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+  }
+
+  resultBox.innerHTML = "<strong>Result:</strong> " + result;
+  ingredients = [];
+  document.getElementById('selectedItems').textContent = "None";
+}
+</script>
