@@ -1,0 +1,143 @@
+<!-- missions.html (Expanded Missions System - Blogger Ready) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;">
+  <h3 style="margin-top:0;">Missions</h3>
+  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;padding:8px;background:#000;border-radius:10px;">
+    <div>💰 <span id="liveCash">$0</span></div>
+    <div>⭐ <span id="liveXP">0 XP</span></div>
+  </div>
+  <div>
+    <select id="npcSelector" onchange="renderNPC(this.value)" style="width:100%;margin-bottom:10px;padding:6px;border-radius:6px;background:#222;color:#fff;">
+      <option value="rico">Rico (Enforcer)</option>
+      <option value="maya">Maya (Courier)</option>
+      <option value="lex">Lex (Chemist)</option>
+    </select>
+  </div>
+  <div id="npcMissions" style="background:#1e1e1e;padding:10px;border-radius:10px;"></div>
+</div>
+
+<script>
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0 };
+let logs = JSON.parse(localStorage.getItem("eventLog")) || [];
+
+const npcs = {
+  rico: {
+    name: "Rico",
+    trust: 30,
+    missions: [
+      {
+        id: "rico_m1",
+        title: "Protect the Block",
+        description: "Stand watch at East Zone.",
+        reward: { xp: 15, cash: 75 },
+        trustReq: 0,
+        repeatable: false
+      },
+      {
+        id: "rico_m2",
+        title: "Intercept Rival",
+        description: "Intercept drop-off at Docks.",
+        reward: { xp: 30, cash: 200 },
+        trustReq: 40,
+        repeatable: true
+      }
+    ]
+  },
+  maya: {
+    name: "Maya",
+    trust: 50,
+    missions: [
+      {
+        id: "maya_m1",
+        title: "Deliver Package",
+        description: "Deliver to downtown club discreetly.",
+        reward: { xp: 20, cash: 100 },
+        trustReq: 0,
+        repeatable: true
+      },
+      {
+        id: "maya_m2",
+        title: "Run Multi-Stop Route",
+        description: "Route includes 3 drop-offs.",
+        reward: { xp: 40, cash: 180 },
+        trustReq: 60,
+        repeatable: false
+      }
+    ]
+  },
+  lex: {
+    name: "Lex",
+    trust: 20,
+    missions: [
+      {
+        id: "lex_m1",
+        title: "Synthesize Trial Pill",
+        description: "Test new designer pill recipe.",
+        reward: { xp: 25, cash: 130 },
+        trustReq: 0,
+        repeatable: false
+      }
+    ]
+  }
+};
+
+function updateStats() {
+  document.getElementById("liveCash").textContent = "$" + stats.cash;
+  document.getElementById("liveXP").textContent = stats.xp + " XP";
+}
+
+function logEvent(text) {
+  const timestamp = new Date().toLocaleTimeString();
+  logs.unshift("[" + timestamp + "] " + text);
+  localStorage.setItem("eventLog", JSON.stringify(logs));
+}
+
+function renderNPC(id) {
+  const npc = npcs[id];
+  let html = `<h4>${npc.name} (Trust: ${npc.trust})</h4>`;
+
+  npc.missions.forEach(m => {
+    const status = localStorage.getItem(m.id) || "available";
+    const isLocked = npc.trust < m.trustReq;
+    if (isLocked) {
+      html += `<p><strong>${m.title}</strong><br><em>Locked - Requires ${m.trustReq} trust</em></p>`;
+    } else if (status === "complete" && !m.repeatable) {
+      html += `<p><strong>${m.title}</strong><br><em>Completed</em></p>`;
+    } else {
+      html += `
+        <div style="margin-bottom:12px;">
+          <strong>${m.title}</strong><br>
+          <small>${m.description}</small><br>
+          <button onclick="completeMission('${id}', '${m.id}')" style="margin-top:5px;padding:6px 12px;">Do Mission</button>
+        </div>
+      `;
+    }
+  });
+
+  document.getElementById("npcMissions").innerHTML = html;
+}
+
+function completeMission(npcId, missionId) {
+  const npc = npcs[npcId];
+  const mission = npc.missions.find(m => m.id === missionId);
+  const status = localStorage.getItem(mission.id);
+
+  if (status === "complete" && !mission.repeatable) return;
+
+  stats.xp += mission.reward.xp;
+  stats.cash += mission.reward.cash;
+  localStorage.setItem("stats", JSON.stringify(stats));
+  if (!mission.repeatable) {
+    localStorage.setItem(mission.id, "complete");
+  }
+
+  updateStats();
+  renderNPC(npcId);
+  logEvent(`Mission Completed: ${mission.title} (+$${mission.reward.cash}, +${mission.reward.xp} XP)`);
+  alert(`Mission Complete: ${mission.title}`);
+}
+
+window.addEventListener("load", () => {
+  updateStats();
+  renderNPC("rico");
+});
+</script>
