@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>45th Parallel - Start Screen</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>45th Parallel - Burner OS</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="start-container">
-    <h1>45th Parallel</h1>
-    <p class="intro-text">You wake up in a broken-down car. The city is cold. Your phone is busted. You need money, fast.</p>
-    <div class="button-grid">
-      <button onclick="startOption('glovebox')">Check Glovebox</button>
-      <button onclick="startOption('phone')">Pick Up Broken Phone</button>
-      <button onclick="startOption('stepout')">Step Out</button>
+  <div class="phone-ui">
+    <div class="phone-header">Burner OS</div>
+    <div class="app-grid">
+      <div class="app-icon" onclick="openApp('missions')">📋<div>Missions</div></div>
+      <div class="app-icon" onclick="openApp('contacts')">👤<div>Contacts</div></div>
+      <div class="app-icon" onclick="openApp('inventory')">🎒<div>Inventory</div></div>
+      <div class="app-icon" onclick="openApp('craft')">⚗️<div>Craft</div></div>
+      <div class="app-icon" onclick="openApp('map')">🗺️<div>Map</div></div>
+      <div class="app-icon" onclick="openApp('log')">🧾<div>Log</div></div>
     </div>
-    <div id="outcome" class="outcome-box"></div>
+    <div id="appWindow" class="app-window">
+      <p>Select an app to begin.</p>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
