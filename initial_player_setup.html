@@ -1,0 +1,11 @@
+<script>
+// Initial game setup (only runs once per new player)
+if (!localStorage.getItem("initialized")) {
+  const starterInventory = ["Cellphone", "Bag of Seeds"];
+  const starterStats = { xp: 0, cash: 0, rep: 0 };
+  localStorage.setItem("inventory", JSON.stringify(starterInventory));
+  localStorage.setItem("stats", JSON.stringify(starterStats));
+  localStorage.setItem("eventLog", JSON.stringify(["Game started with Cellphone + Seeds."]));
+  localStorage.setItem("initialized", "true");
+}
+</script>
