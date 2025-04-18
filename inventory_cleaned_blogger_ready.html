@@ -1,0 +1,46 @@
+<!-- Corner Hustle - Complete Blogger-Ready Inventory Page -->
+<div style="max-width:320px;margin:0 auto;padding:10px;background:#121212;color:#fff;font-family:'Segoe UI',sans-serif;">
+  <h3 style="margin-top:0;">Inventory</h3>
+  <div style="font-size:13px;margin-bottom:8px;">
+    <strong>Items:</strong> <span id="invCount">0</span>
+  </div>
+  <ul id="invList" style="list-style:none;padding:0;"></ul>
+</div>
+
+<script>
+// Load inventory from localStorage
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+function updateInventoryDisplay() {
+  const invList = document.getElementById("invList");
+  const invCount = document.getElementById("invCount");
+  invCount.textContent = inventory.length;
+
+  if (inventory.length === 0) {
+    invList.innerHTML = "<li style='padding:6px;color:#aaa;'>You have no items.</li>";
+    return;
+  }
+
+  invList.innerHTML = "";
+  inventory.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.style.marginBottom = "10px";
+    li.innerHTML = `
+      <div style="background:#222;padding:8px;border-radius:8px;">
+        <div style="margin-bottom:6px;">${item}</div>
+        <button onclick="dropItem(${i})" style="padding:5px 10px;font-size:12px;border:none;border-radius:5px;background:#444;color:#fff;">Drop</button>
+      </div>
+    `;
+    invList.appendChild(li);
+  });
+}
+
+function dropItem(index) {
+  const removed = inventory.splice(index, 1)[0];
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  updateInventoryDisplay();
+  alert("You dropped: " + removed);
+}
+
+window.addEventListener("load", updateInventoryDisplay);
+</script>
