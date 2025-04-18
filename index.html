@@ -9,15 +9,33 @@
   <div class="phone-ui">
     <div class="phone-header">Burner OS</div>
     <div class="app-grid">
-      <div class="app-icon" onclick="openApp('missions')">📋<div>Missions</div></div>
-      <div class="app-icon" onclick="openApp('contacts')">👤<div>Contacts</div></div>
-      <div class="app-icon" onclick="openApp('inventory')">🎒<div>Inventory</div></div>
-      <div class="app-icon" onclick="openApp('craft')">⚗️<div>Craft</div></div>
-      <div class="app-icon" onclick="openApp('map')">🗺️<div>Map</div></div>
-      <div class="app-icon" onclick="openApp('log')">🧾<div>Log</div></div>
+      <div class="app-icon" onclick="showScreen('missionsScreen')">📋<div>Missions</div></div>
+      <div class="app-icon" onclick="showScreen('contactsScreen')">👤<div>Contacts</div></div>
+      <div class="app-icon" onclick="showScreen('inventoryScreen')">🎒<div>Inventory</div></div>
+      <div class="app-icon" onclick="showScreen('craftScreen')">⚗️<div>Craft</div></div>
+      <div class="app-icon" onclick="showScreen('mapScreen')">🗺️<div>Map</div></div>
+      <div class="app-icon" onclick="showScreen('logScreen')">🧾<div>Log</div></div>
     </div>
-    <div id="appWindow" class="app-window">
-      <p>Select an app to begin.</p>
+    <div class="app-window">
+      <div id="missionsScreen" class="app-screen" style="display:none;"><h4>Missions</h4><p>Mission content here.</p></div>
+      <div id="contactsScreen" class="app-screen" style="display:none;"><h4>Contacts</h4><p>Contact list here.</p></div>
+      <div id="inventoryScreen" class="app-screen" style="display:none;"><h4>Inventory</h4><ul id="inventoryList"></ul></div>
+      <div id="craftScreen" class="app-screen" style="display:none;">
+        <h4>Crafting Lab</h4>
+        <div style='display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;'>
+          <span onclick="selectIngredient('🌿')" style="cursor:pointer;">🌿</span>
+          <span onclick="selectIngredient('💊')" style="cursor:pointer;">💊</span>
+          <span onclick="selectIngredient('⚗️')" style="cursor:pointer;">⚗️</span>
+          <span onclick="selectIngredient('💉')" style="cursor:pointer;">💉</span>
+          <span onclick="selectIngredient('🔫')" style="cursor:pointer;">🔫</span>
+          <span onclick="selectIngredient('⚙️')" style="cursor:pointer;">⚙️</span>
+        </div>
+        <div><strong>Selected:</strong> <span id="selectedItems">None</span></div>
+        <button onclick="craftItem()">Synthesize</button>
+        <div id="craftResult" style="margin-top:10px;font-size:0.9em;color:#ccc;"></div>
+      </div>
+      <div id="mapScreen" class="app-screen" style="display:none;"><h4>Map</h4><p>Map coming soon.</p></div>
+      <div id="logScreen" class="app-screen" style="display:none;"><h4>Log</h4><p>Event log here.</p></div>
     </div>
   </div>
   <script src="script.js"></script>
