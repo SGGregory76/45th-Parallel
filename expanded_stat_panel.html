@@ -1,0 +1,27 @@
+<!-- Insert inside any page using stats -->
+<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;padding:6px 12px;background:#000;border-radius:10px;">
+  <div>💰 <span id="liveCash">$0</span></div>
+  <div>⭐ <span id="liveXP">0 XP</span></div>
+  <div>🏆 <span id="liveRep">0 REP</span></div>
+</div>
+
+<script>
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+
+function saveStats() {
+  localStorage.setItem("stats", JSON.stringify(stats));
+}
+
+function updateStats() {
+  if (document.getElementById('liveCash')) document.getElementById('liveCash').textContent = "$" + stats.cash;
+  if (document.getElementById('liveXP')) document.getElementById('liveXP').textContent = stats.xp + " XP";
+  if (document.getElementById('liveRep')) document.getElementById('liveRep').textContent = stats.rep + " REP";
+}
+
+window.addEventListener("storage", () => {
+  stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+  updateStats();
+});
+
+window.addEventListener("load", updateStats);
+</script>
