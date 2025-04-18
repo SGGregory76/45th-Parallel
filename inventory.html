@@ -1,1 +1,30 @@
-<!-- p/inventory.html placeholder -->
+<!-- inventory.html (Burner OS Inventory Page) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;">
+  <h3 style="margin-top:0;">Inventory</h3>
+  <div id="inventoryPanel" style="background:#1e1e1e;padding:10px;border-radius:8px;"></div>
+</div>
+
+<script>
+let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+
+function renderInventory() {
+  let html = "<ul style='padding-left:18px;'>";
+  if (inventory.length === 0) {
+    html += "<li>Inventory is empty.</li>";
+  } else {
+    inventory.forEach((item, index) => {
+      html += `<li>${item} <button onclick="dropItem(${index})" style="margin-left:10px;">Drop</button></li>`;
+    });
+  }
+  html += "</ul>";
+  document.getElementById("inventoryPanel").innerHTML = html;
+}
+
+function dropItem(index) {
+  inventory.splice(index, 1);
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+  renderInventory();
+}
+
+window.addEventListener("load", renderInventory);
+</script>
