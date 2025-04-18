@@ -1,0 +1,45 @@
+<!-- contacts.html (NPC Mood-Based Dialog System) -->
+<div style="padding:10px;font-family:'Segoe UI',sans-serif;color:#fff;background:#121212;max-width:320px;margin:auto;">
+  <h3 style="margin-top:0;">Contacts</h3>
+  <div id="contactsPanel" style="background:#1e1e1e;padding:10px;border-radius:10px;max-height:300px;overflow-y:auto;"></div>
+  <div id="npcDialog" style="margin-top:10px;padding:8px;background:#202020;border-radius:10px;min-height:40px;font-size:13px;"></div>
+</div>
+
+<script>
+const contacts = [
+  { id: "rico", name: "Rico", role: "Enforcer", trust: 30, loyalty: "Neutral", mood: "Cautious" },
+  { id: "maya", name: "Maya", role: "Courier", trust: 50, loyalty: "Loyal", mood: "Happy" },
+  { id: "lex", name: "Lex", role: "Chemist", trust: 15, loyalty: "Cautious", mood: "Annoyed" },
+  { id: "vito", name: "Vito", role: "Broker", trust: 70, loyalty: "Devoted", mood: "Calm" },
+  { id: "nina", name: "Nina", role: "Fixer", trust: 10, loyalty: "Disloyal", mood: "Aggressive" }
+];
+
+const dialogResponses = {
+  Happy: "Hey, good to hear from you! Got something cooking if you're in.",
+  Cautious: "I’m not sure I can trust you yet. One step at a time.",
+  Annoyed: "What do you want now? Don’t waste my time.",
+  Aggressive: "You better bring something worth my while or walk.",
+  Calm: "I'm open to talk business if you’re serious."
+};
+
+function renderContacts() {
+  let html = "";
+  contacts.forEach(c => {
+    html += `
+      <div style="margin-bottom:10px;padding:8px;background:#252525;border-radius:8px;">
+        <strong>${c.name}</strong> <span style="font-size:11px;color:#aaa;">(${c.role})</span><br>
+        <small>Trust: ${c.trust} | Loyalty: ${c.loyalty} | Mood: ${c.mood}</small><br>
+        <button onclick="showDialog('${c.mood}', '${c.name}')" style="margin-top:5px;padding:4px 10px;font-size:12px;">Message</button>
+      </div>
+    `;
+  });
+  document.getElementById("contactsPanel").innerHTML = html;
+}
+
+function showDialog(mood, name) {
+  const dialog = dialogResponses[mood] || "They don't respond right now.";
+  document.getElementById("npcDialog").innerHTML = `<strong>${name}:</strong> “${dialog}”`;
+}
+
+window.addEventListener("load", renderContacts);
+</script>
