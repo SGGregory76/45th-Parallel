@@ -1,0 +1,68 @@
+<!-- HustleTrap Inventory Page -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">Inventory</h3>
+  <div id="inventoryList" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<script>
+const itemIcons = {
+  "Weed": "🌿",
+  "Microdrop": "💧",
+  "Cash": "💵",
+  "Adderall": "💊",
+  "Scale": "⚖️",
+  "Backpack": "🎒",
+  "Knife": "🔪"
+};
+
+function getInventory() {
+  return JSON.parse(localStorage.getItem("inventory")) || [];
+}
+
+function saveInventory(inv) {
+  localStorage.setItem("inventory", JSON.stringify(inv));
+}
+
+function renderInventory() {
+  const inv = getInventory();
+  const container = document.getElementById("inventoryList");
+  container.innerHTML = "";
+
+  if (inv.length === 0) {
+    container.innerHTML = "<p style='text-align:center;font-size:14px;'>Your bag is empty.</p>";
+    return;
+  }
+
+  inv.forEach((item, index) => {
+    const icon = itemIcons[item.name] || "❔";
+    const row = document.createElement("div");
+    row.style = "display:flex;justify-content:space-between;align-items:center;background:#1c1c1c;padding:10px;border-radius:8px;";
+    row.innerHTML = `
+      <div style="font-size:16px;">${icon} <strong>${item.name}</strong> x${item.qty}</div>
+      <button onclick="dropItem(${index})" style="padding:4px 8px;border:none;border-radius:4px;background:#822;color:#fff;font-size:12px;">Drop</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function dropItem(index) {
+  const inv = getInventory();
+  if (confirm("Drop " + inv[index].name + "?")) {
+    inv.splice(index, 1);
+    saveInventory(inv);
+    renderInventory();
+  }
+}
+
+// Dummy data injection for devs
+if (!localStorage.getItem("inventory")) {
+  saveInventory([
+    { name: "Weed", qty: 2 },
+    { name: "Microdrop", qty: 1 },
+    { name: "Scale", qty: 1 },
+    { name: "Cash", qty: 500 }
+  ]);
+}
+
+document.addEventListener("DOMContentLoaded", renderInventory);
+</script>
