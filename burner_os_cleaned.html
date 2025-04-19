@@ -1,0 +1,88 @@
+<!-- Cleaned Burner OS UI (No Save/Reset) -->
+<div class="phone-ui">
+  <div class="phone-header">Corner Hustle</div>
+  <div class="app-grid">
+    <div class="app-icon" onclick="location.href='/p/missions.html'">
+      <span class="icon">📋</span>
+      <span class="label">Missions</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/contacts.html'">
+      <span class="icon">👥</span>
+      <span class="label">Contacts</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/inventory.html'">
+      <span class="icon">🎒</span>
+      <span class="label">Inventory</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/craft.html'">
+      <span class="icon">⚗️</span>
+      <span class="label">Craft</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/map.html'">
+      <span class="icon">🗺️</span>
+      <span class="label">Map</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/log.html'">
+      <span class="icon">🧾</span>
+      <span class="label">Log</span>
+    </div>
+    <div class="app-icon" onclick="location.href='/p/settings.html'">
+      <span class="icon">⚙️</span>
+      <span class="label">Settings</span>
+    </div>
+  </div>
+</div>
+
+<style>
+body {
+  background: #000;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.phone-ui {
+  width: 320px;
+  background: #121212;
+  border: 2px solid #444;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 150, 0.2);
+}
+.phone-header {
+  background: #111;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+  border-bottom: 1px solid #444;
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 15px;
+}
+.app-icon {
+  background: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  color: #ccc;
+  transition: background 0.3s;
+  cursor: pointer;
+}
+.app-icon:hover {
+  background: #2c2c2c;
+}
+.icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 5px;
+}
+.label {
+  font-size: 12px;
+}
+</style>
