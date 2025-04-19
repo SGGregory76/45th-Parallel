@@ -1,0 +1,49 @@
+<!-- HustleTrap Map Page -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#0d0d0d;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">City Map</h3>
+  <div id="locationList" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<script>
+const locations = [
+  { name: "Your Car", icon: "🚗", id: "car", lock: false },
+  { name: "Alley", icon: "🚧", id: "alley", lock: false },
+  { name: "Club", icon: "🎶", id: "club", lock: true, unlockReq: { rep: 10 } },
+  { name: "Warehouse", icon: "🏚️", id: "warehouse", lock: true, unlockReq: { xp: 20 } },
+  { name: "Police Station", icon: "🚓", id: "cop", lock: true, unlockReq: { xp: 50 } }
+];
+
+function getStats() {
+  return JSON.parse(localStorage.getItem("stats")) || { xp: 0, rep: 0, cash: 0 };
+}
+
+function renderMap() {
+  const list = document.getElementById("locationList");
+  const stats = getStats();
+  list.innerHTML = "";
+
+  locations.forEach(loc => {
+    let isLocked = loc.lock;
+    if (loc.unlockReq) {
+      if (loc.unlockReq.xp && stats.xp >= loc.unlockReq.xp) isLocked = false;
+      if (loc.unlockReq.rep && stats.rep >= loc.unlockReq.rep) isLocked = false;
+    }
+
+    const row = document.createElement("div");
+    row.style = "display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:8px;background:#191919;";
+    row.innerHTML = `
+      <div style="font-size:16px;">${loc.icon} <strong>${loc.name}</strong></div>
+      ${isLocked
+        ? `<span style='font-size:12px;color:#888;'>Locked</span>`
+        : `<button onclick="goTo('${loc.id}')" style="padding:4px 8px;background:#294;border:none;border-radius:4px;color:#fff;">Go</button>`}
+    `;
+    list.appendChild(row);
+  });
+}
+
+function goTo(id) {
+  alert("Traveling to " + id + "... (You can link to pages/events here)");
+}
+
+document.addEventListener("DOMContentLoaded", renderMap);
+</script>
