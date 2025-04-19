@@ -1,0 +1,91 @@
+<!-- Maya Mission - One-Time Dynamic with Reset Tool -->
+<div style="max-width:320px;margin:20px auto;padding:15px;background:#111;color:#fff;font-family:'Segoe UI',sans-serif;border-radius:10px;">
+  <h3>Mission: Microdrop to Club</h3>
+  <div id="missionStage">Checking status...</div>
+  <div id="missionOptions" style="margin-top:10px;"></div>
+  <div id="missionLog" style="font-size:13px;color:#aaa;margin-top:10px;"></div>
+  <button onclick="resetMayaMission()" style="margin-top:15px;padding:6px 12px;background:#222;color:#fff;border:none;border-radius:6px;font-size:12px;">[Dev] Reset Maya Mission</button>
+</div>
+
+<script>
+if (!localStorage.getItem("mission_maya")) {
+  localStorage.setItem("mission_maya", "not_started");
+}
+
+let missionStatus = localStorage.getItem("mission_maya");
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+
+function initMayaMission() {
+  const stageText = document.getElementById('missionStage');
+  const optionsDiv = document.getElementById('missionOptions');
+  const logDiv = document.getElementById('missionLog');
+
+  if (missionStatus === "complete") {
+    stageText.textContent = "Mission already completed.";
+    optionsDiv.innerHTML = "<em>This mission is not repeatable.</em>";
+    return;
+  }
+
+  stageText.textContent = "Step 1: Maya gives you a microdrop vial. Deliver it safely.";
+  optionsDiv.innerHTML = `
+    <button onclick="nextMayaStage(1)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#3b3b3b;color:#fff;">Take Mission</button>
+  `;
+}
+
+function nextMayaStage(step) {
+  const stageText = document.getElementById('missionStage');
+  const optionsDiv = document.getElementById('missionOptions');
+  const logDiv = document.getElementById('missionLog');
+
+  if (step === 1) {
+    stageText.textContent = "Step 2: Choose your delivery path.";
+    optionsDiv.innerHTML = `
+      <button onclick="nextMayaStage(2)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#444;color:#fff;">Party Route (Social, Safe)</button>
+      <button onclick="nextMayaStage(3)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#444;color:#fff;">Back Alley (Fast, Risky)</button>
+    `;
+  }
+
+  else if (step === 2) {
+    stageText.textContent = "Step 3: Arrived at the club.";
+    logDiv.textContent = "You played it cool and made friends along the way. Boosted reputation.";
+    optionsDiv.innerHTML = `<button onclick="nextMayaStage(4)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#3a3;color:#fff;">Report Back</button>`;
+    stats.rep += 5;
+    localStorage.setItem("stats", JSON.stringify(stats));
+  }
+
+  else if (step === 3) {
+    const roll = Math.random();
+    let eventText = "";
+    if (roll < 0.4) {
+      eventText = "You were spotted by club security. Microdrop confiscated!";
+      let inv = JSON.parse(localStorage.getItem("inventory")) || [];
+      inv = inv.filter(i => i !== "Microdrop");
+      localStorage.setItem("inventory", JSON.stringify(inv));
+    } else {
+      eventText = "You made the drop fast — and undetected.";
+      stats.cash += 100;
+    }
+    stageText.textContent = "Step 3: Reached the drop point.";
+    logDiv.textContent = eventText;
+    optionsDiv.innerHTML = `<button onclick="nextMayaStage(4)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#3a3;color:#fff;">Report Back</button>`;
+    localStorage.setItem("stats", JSON.stringify(stats));
+  }
+
+  else if (step === 4) {
+    stats.xp += 10;
+    stats.rep += 3;
+    localStorage.setItem("stats", JSON.stringify(stats));
+    localStorage.setItem("mission_maya", "complete");
+    stageText.textContent = "Mission Complete!";
+    optionsDiv.innerHTML = "";
+    logDiv.innerHTML += "<br><strong>+10 XP, +3 REP</strong><br><em>This mission can only be completed once.</em>";
+  }
+}
+
+function resetMayaMission() {
+  localStorage.setItem("mission_maya", "not_started");
+  location.reload();
+}
+
+window.addEventListener("DOMContentLoaded", initMayaMission);
+</script>
