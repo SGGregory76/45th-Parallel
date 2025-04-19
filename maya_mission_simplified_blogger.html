@@ -1,0 +1,89 @@
+<!-- Simplified Blogger-Safe Maya Mission -->
+<div style="max-width:320px;margin:20px auto;padding:15px;background:#111;color:#fff;font-family:'Segoe UI',sans-serif;border-radius:10px;">
+  <h3>Mission: Microdrop to Club</h3>
+  <div id="missionStage">Checking status...</div>
+  <div id="missionOptions" style="margin-top:10px;"></div>
+  <div id="missionLog" style="font-size:13px;color:#aaa;margin-top:10px;"></div>
+  <div id="devControls" style="margin-top:15px;text-align:center;">
+    <button id="resetMaya" style="padding:5px 10px;border:none;border-radius:6px;background:#222;color:#fff;">[Dev] Reset</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  let stats = JSON.parse(localStorage.getItem("stats") || '{"xp":0,"cash":0,"rep":0}');
+  let missionStatus = localStorage.getItem("mission_maya") || "not_started";
+  const stage = document.getElementById("missionStage");
+  const options = document.getElementById("missionOptions");
+  const log = document.getElementById("missionLog");
+
+  function setOptions(btns) {
+    options.innerHTML = btns.map(b => 
+      '<button data-step="' + b.step + '" style="margin:4px;padding:6px 10px;border:none;border-radius:5px;background:#333;color:#fff;">' + b.label + '</button>'
+    ).join("");
+  }
+
+  function updateUI(step) {
+    if (missionStatus === "complete") {
+      stage.textContent = "Mission already completed.";
+      options.innerHTML = "<em>This mission is not repeatable.</em>";
+      return;
+    }
+
+    switch(step) {
+      case 0:
+        stage.textContent = "Step 1: Maya gives you a microdrop vial. Deliver it safely.";
+        setOptions([{ step: 1, label: "Take Mission" }]);
+        break;
+      case 1:
+        stage.textContent = "Step 2: Choose your delivery path.";
+        setOptions([
+          { step: 2, label: "Party Route (Safe)" },
+          { step: 3, label: "Back Alley (Risky)" }
+        ]);
+        break;
+      case 2:
+        stage.textContent = "Step 3: Arrived at club.";
+        log.textContent = "You played it cool and made friends. REP increased.";
+        stats.rep += 5;
+        localStorage.setItem("stats", JSON.stringify(stats));
+        setOptions([{ step: 4, label: "Report Back" }]);
+        break;
+      case 3:
+        stage.textContent = "Step 3: Reached club via alley.";
+        const risk = Math.random();
+        if (risk < 0.4) {
+          log.textContent = "You got spotted and lost the microdrop.";
+          let inv = JSON.parse(localStorage.getItem("inventory") || "[]");
+          localStorage.setItem("inventory", JSON.stringify(inv.filter(i => i !== "Microdrop")));
+        } else {
+          log.textContent = "Quick and clean drop. Earned bonus cash.";
+          stats.cash += 100;
+        }
+        localStorage.setItem("stats", JSON.stringify(stats));
+        setOptions([{ step: 4, label: "Report Back" }]);
+        break;
+      case 4:
+        stage.textContent = "Mission Complete!";
+        stats.xp += 10;
+        stats.rep += 3;
+        localStorage.setItem("stats", JSON.stringify(stats));
+        localStorage.setItem("mission_maya", "complete");
+        options.innerHTML = "";
+        log.innerHTML += "<br><strong>+10 XP, +3 REP</strong><br><em>This mission can only be completed once.</em>";
+        break;
+    }
+  }
+
+  document.getElementById("missionOptions").addEventListener("click", function(e) {
+    if (e.target.dataset.step) updateUI(parseInt(e.target.dataset.step));
+  });
+
+  document.getElementById("resetMaya").addEventListener("click", function() {
+    localStorage.setItem("mission_maya", "not_started");
+    location.reload();
+  });
+
+  updateUI(0);
+});
+</script>
