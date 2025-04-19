@@ -1,0 +1,54 @@
+<!-- HustleTrap Contacts Page -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">Contacts</h3>
+  <div id="contactsContainer" style="display:flex;flex-direction:column;gap:15px;"></div>
+</div>
+
+<script>
+const contacts = [
+  {
+    name: "Rico",
+    emoji: "🧨",
+    faction: "Crew",
+    loyalty: "Trusted",
+    mood: "Focused",
+    link: "https://hustletrap.blogspot.com/2025/04/rico.html?m=1"
+  },
+  {
+    name: "Maya",
+    emoji: "💊",
+    faction: "Runners",
+    loyalty: "Neutral",
+    mood: "Cautious",
+    link: "https://hustletrap.blogspot.com/2025/04/maya.html?m=1"
+  },
+  {
+    name: "Lex",
+    emoji: "⚗️",
+    faction: "Labs",
+    loyalty: "Loyal",
+    mood: "Analytical",
+    link: "https://hustletrap.blogspot.com/2025/04/lex.html?m=1"
+  }
+];
+
+function renderContacts() {
+  const container = document.getElementById("contactsContainer");
+  contacts.forEach(npc => {
+    const box = document.createElement("div");
+    box.style = "background:#1c1c1c;padding:12px;border-radius:10px;";
+
+    box.innerHTML = `
+      <div style="font-size:18px;margin-bottom:5px;">${npc.emoji} <strong>${npc.name}</strong> <span style="font-size:11px;color:#aaa;">(${npc.faction})</span></div>
+      <div style="font-size:12px;color:#ccc;">Loyalty: <strong>${npc.loyalty}</strong></div>
+      <div style="font-size:12px;color:#ccc;">Mood: <em>${npc.mood}</em></div>
+      <div style="margin-top:10px;">
+        <a href="${npc.link}" style="display:inline-block;padding:6px 10px;border-radius:6px;background:#333;color:#fff;text-decoration:none;font-size:13px;">View Profile</a>
+      </div>
+    `;
+    container.appendChild(box);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", renderContacts);
+</script>
