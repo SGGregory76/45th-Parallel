@@ -1,0 +1,87 @@
+<!-- Updated Rico Mission - One-Time Only + Reset Tool -->
+<div style="max-width:320px;margin:20px auto;padding:15px;background:#111;color:#fff;font-family:'Segoe UI',sans-serif;border-radius:10px;">
+  <h3>Mission: Rico’s Turf Run</h3>
+  <div id="missionStage">Checking status...</div>
+  <div id="missionOptions" style="margin-top:10px;"></div>
+  <div id="missionLog" style="font-size:13px;color:#aaa;margin-top:10px;"></div>
+  <button onclick="resetRicoMission()" style="margin-top:15px;padding:6px 12px;background:#222;color:#fff;border:none;border-radius:6px;font-size:12px;">[Dev] Reset Rico Mission</button>
+</div>
+
+<script>
+if (!localStorage.getItem("mission_rico")) {
+  localStorage.setItem("mission_rico", "not_started");
+}
+
+let missionStatus = localStorage.getItem("mission_rico");
+let stats = JSON.parse(localStorage.getItem("stats")) || { xp: 0, cash: 0, rep: 0 };
+
+function initMission() {
+  const stageText = document.getElementById('missionStage');
+  const optionsDiv = document.getElementById('missionOptions');
+  const logDiv = document.getElementById('missionLog');
+
+  if (missionStatus === "complete") {
+    stageText.textContent = "Mission already completed.";
+    optionsDiv.innerHTML = "<em>This mission is not repeatable.</em>";
+    return;
+  }
+
+  stageText.textContent = "Step 1: Meet Rico behind the club.";
+  optionsDiv.innerHTML = `
+    <button onclick="nextMissionStage(1)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#333;color:#fff;">Approach Rico</button>
+  `;
+}
+
+function nextMissionStage(step) {
+  const stageText = document.getElementById('missionStage');
+  const optionsDiv = document.getElementById('missionOptions');
+  const logDiv = document.getElementById('missionLog');
+
+  if (step === 1) {
+    stageText.textContent = "Step 2: Choose your route to deliver the stash.";
+    optionsDiv.innerHTML = `
+      <button onclick="nextMissionStage(2)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#444;color:#fff;">Alley Shortcut (Risky)</button>
+      <button onclick="nextMissionStage(3)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#444;color:#fff;">Main Street (Safe)</button>
+    `;
+  }
+
+  else if (step === 2) {
+    let eventLog = "";
+    const roll = Math.random();
+    if (roll < 0.3) {
+      eventLog = "You were caught in a turf fight! Lost $100.";
+      stats.cash = Math.max(0, stats.cash - 100);
+    } else {
+      eventLog = "You made it through with no issues.";
+    }
+    stageText.textContent = "Step 3: Return to Rico.";
+    optionsDiv.innerHTML = `<button onclick="nextMissionStage(4)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#3a3;color:#fff;">Report Back</button>`;
+    logDiv.textContent = eventLog;
+    localStorage.setItem("stats", JSON.stringify(stats));
+  }
+
+  else if (step === 3) {
+    stageText.textContent = "Step 3: Return to Rico.";
+    optionsDiv.innerHTML = `<button onclick="nextMissionStage(4)" style="margin:5px;padding:6px 12px;border:none;border-radius:6px;background:#3a3;color:#fff;">Report Back</button>`;
+    logDiv.textContent = "You took the long route and stayed out of trouble.";
+  }
+
+  else if (step === 4) {
+    stats.cash += 200;
+    stats.xp += 15;
+    stats.rep += 5;
+    localStorage.setItem("stats", JSON.stringify(stats));
+    localStorage.setItem("mission_rico", "complete");
+    stageText.textContent = "Mission Complete!";
+    optionsDiv.innerHTML = "";
+    logDiv.innerHTML += "<br><strong>+ $200, +15 XP, +5 REP</strong><br><em>This mission can only be completed once.</em>";
+  }
+}
+
+function resetRicoMission() {
+  localStorage.setItem("mission_rico", "not_started");
+  location.reload();
+}
+
+window.addEventListener("DOMContentLoaded", initMission);
+</script>
