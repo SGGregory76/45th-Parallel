@@ -1,0 +1,101 @@
+<!-- Expanded HustleTrap Contacts Page with Dialog and Personality -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">Contacts</h3>
+  <div id="contactsContainer" style="display:flex;flex-direction:column;gap:15px;"></div>
+</div>
+
+<script>
+const contacts = [
+  {
+    name: "Rico",
+    emoji: "🧨",
+    faction: "Crew",
+    personality: "Aggressive",
+    loyaltyKey: "loyalty_rico",
+    repKey: "rep_rico",
+    link: "https://hustletrap.blogspot.com/2025/04/rico.html?m=1"
+  },
+  {
+    name: "Maya",
+    emoji: "💊",
+    faction: "Runners",
+    personality: "Strategic",
+    loyaltyKey: "loyalty_maya",
+    repKey: "rep_maya",
+    link: "https://hustletrap.blogspot.com/2025/04/maya.html?m=1"
+  },
+  {
+    name: "Lex",
+    emoji: "⚗️",
+    faction: "Labs",
+    personality: "Cautious",
+    loyaltyKey: "loyalty_lex",
+    repKey: "rep_lex",
+    link: "https://hustletrap.blogspot.com/2025/04/lex.html?m=1"
+  }
+];
+
+function getMeter(value, max = 100, width = 100, color = "#0f0") {
+  const percent = Math.min(Math.max(value, 0), max) / max * 100;
+  return `
+    <div style="background:#222;width:${width}px;height:8px;border-radius:4px;margin:4px 0;">
+      <div style="width:${percent}%;height:8px;background:${color};border-radius:4px;"></div>
+    </div>`;
+}
+
+function getMood(rep) {
+  if (rep >= 80) return "Friendly";
+  if (rep >= 50) return "Chill";
+  if (rep >= 20) return "Cautious";
+  return "Distant";
+}
+
+function getDialog(npc, rep) {
+  if (rep >= 80) return `${npc.name}: "You’ve proven yourself, we move as one now."`;
+  if (rep >= 50) return `${npc.name}: "Keep it up and we might really do business."`;
+  if (rep >= 20) return `${npc.name}: "I don’t know if I can trust you yet."`;
+  return `${npc.name}: "You're not ready. Stay outta my way."`;
+}
+
+function renderContacts() {
+  const container = document.getElementById("contactsContainer");
+
+  contacts.forEach(npc => {
+    const loyalty = parseInt(localStorage.getItem(npc.loyaltyKey)) || 30;
+    const rep = parseInt(localStorage.getItem(npc.repKey)) || 10;
+    const mood = getMood(rep);
+
+    const box = document.createElement("div");
+    box.style = "background:#1c1c1c;padding:12px;border-radius:10px;";
+
+    box.innerHTML = `
+      <div style="font-size:18px;margin-bottom:5px;">
+        ${npc.emoji} <strong>${npc.name}</strong>
+        <span style="font-size:11px;color:#aaa;">(${npc.faction})</span>
+        <span style="float:right;font-size:11px;color:#6cf;background:#222;padding:2px 6px;border-radius:4px;">
+          ${npc.personality}
+        </span>
+      </div>
+      <div style="font-size:12px;">Loyalty</div>
+      ${getMeter(loyalty, 100, 100, "#4dc")}
+      <div style="font-size:12px;">Reputation</div>
+      ${getMeter(rep, 100, 100, "#fc0")}
+      <div style="font-size:12px;margin-top:5px;color:#ccc;">Mood: <em>${mood}</em></div>
+      <div style="margin-top:10px;">
+        <a href="${npc.link}" style="padding:5px 10px;border-radius:6px;background:#333;color:#fff;text-decoration:none;font-size:13px;">View Profile</a>
+        <button onclick="startDialog('${npc.name}', ${rep})" style="margin-left:6px;padding:5px 10px;border-radius:6px;background:#444;color:#fff;font-size:13px;">Talk</button>
+      </div>
+      <div id="dialog_${npc.name}" style="margin-top:10px;font-size:12px;color:#9f9;"></div>
+    `;
+    container.appendChild(box);
+  });
+}
+
+function startDialog(name, rep) {
+  const npc = contacts.find(c => c.name === name);
+  const dialog = getDialog(npc, rep);
+  document.getElementById("dialog_" + name).innerText = dialog;
+}
+
+document.addEventListener("DOMContentLoaded", renderContacts);
+</script>
