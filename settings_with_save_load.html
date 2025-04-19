@@ -1,0 +1,79 @@
+<!-- HustleTrap Settings Page with Save/Load -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">Settings</h3>
+
+  <div style="margin-bottom:20px;">
+    <p style="font-size:14px;margin-bottom:8px;">Reset All Game Progress</p>
+    <button onclick="resetAllProgress()" style="padding:8px 14px;background:#911;border:none;color:#fff;border-radius:6px;font-size:13px;">
+      Reset Game Progress
+    </button>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <p style="font-size:14px;margin-bottom:8px;">Save Game State</p>
+    <button onclick="saveGameSlot('save1')" style="padding:6px 10px;margin-right:5px;background:#226;border:none;color:#fff;border-radius:6px;">Save Slot 1</button>
+    <button onclick="loadGameSlot('save1')" style="padding:6px 10px;background:#262;border:none;color:#fff;border-radius:6px;">Load Slot 1</button>
+    <div id="saveStatus" style="margin-top:6px;font-size:12px;color:#aaa;"></div>
+  </div>
+</div>
+
+<script>
+function resetAllProgress() {
+  if (confirm("Are you sure you want to reset ALL game progress?")) {
+    const keys = [
+      "mission_rico", "mission_maya", "mission_lex",
+      "loyalty_rico", "loyalty_maya", "loyalty_lex",
+      "rep_rico", "rep_maya", "rep_lex",
+      "stats", "inventory"
+    ];
+    keys.forEach(k => localStorage.removeItem(k));
+    alert("Game progress has been reset.");
+    location.reload();
+  }
+}
+
+function saveGameSlot(slotKey) {
+  const state = {
+    missions: {
+      rico: localStorage.getItem("mission_rico"),
+      maya: localStorage.getItem("mission_maya"),
+      lex: localStorage.getItem("mission_lex")
+    },
+    loyalty: {
+      rico: localStorage.getItem("loyalty_rico"),
+      maya: localStorage.getItem("loyalty_maya"),
+      lex: localStorage.getItem("loyalty_lex")
+    },
+    rep: {
+      rico: localStorage.getItem("rep_rico"),
+      maya: localStorage.getItem("rep_maya"),
+      lex: localStorage.getItem("rep_lex")
+    },
+    stats: localStorage.getItem("stats"),
+    inventory: localStorage.getItem("inventory")
+  };
+  localStorage.setItem(slotKey, JSON.stringify(state));
+  document.getElementById("saveStatus").innerText = "Game saved to " + slotKey + ".";
+}
+
+function loadGameSlot(slotKey) {
+  const data = JSON.parse(localStorage.getItem(slotKey));
+  if (!data) {
+    alert("No saved data found.");
+    return;
+  }
+  localStorage.setItem("mission_rico", data.missions.rico);
+  localStorage.setItem("mission_maya", data.missions.maya);
+  localStorage.setItem("mission_lex", data.missions.lex);
+  localStorage.setItem("loyalty_rico", data.loyalty.rico);
+  localStorage.setItem("loyalty_maya", data.loyalty.maya);
+  localStorage.setItem("loyalty_lex", data.loyalty.lex);
+  localStorage.setItem("rep_rico", data.rep.rico);
+  localStorage.setItem("rep_maya", data.rep.maya);
+  localStorage.setItem("rep_lex", data.rep.lex);
+  localStorage.setItem("stats", data.stats);
+  localStorage.setItem("inventory", data.inventory);
+  alert("Game loaded from " + slotKey + ".");
+  location.reload();
+}
+</script>
