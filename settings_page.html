@@ -1,0 +1,37 @@
+<!-- HustleTrap Settings Page -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:15px;">Settings</h3>
+
+  <div style="margin-bottom:20px;">
+    <p style="font-size:14px;margin-bottom:8px;">Reset All Game Progress</p>
+    <button onclick="resetAllProgress()" style="padding:8px 14px;background:#911;border:none;color:#fff;border-radius:6px;font-size:13px;">
+      Reset Game Progress
+    </button>
+  </div>
+
+  <div style="margin-bottom:20px;">
+    <p style="font-size:14px;margin-bottom:8px;">Coming Soon</p>
+    <ul style="font-size:12px;color:#aaa;line-height:1.5;margin-left:16px;">
+      <li>Save/Load Slots</li>
+      <li>Music/Sound Toggles</li>
+      <li>Theme Selector</li>
+      <li>Cheat/Test Options (Dev Mode)</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function resetAllProgress() {
+  if (confirm("Are you sure you want to reset ALL game progress?")) {
+    const keys = [
+      "mission_rico", "mission_maya", "mission_lex",
+      "loyalty_rico", "loyalty_maya", "loyalty_lex",
+      "rep_rico", "rep_maya", "rep_lex",
+      "stats", "inventory"
+    ];
+    keys.forEach(k => localStorage.removeItem(k));
+    alert("Game progress has been reset.");
+    location.reload();
+  }
+}
+</script>
