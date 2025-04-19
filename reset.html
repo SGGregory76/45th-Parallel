@@ -1,0 +1,31 @@
+<div style="text-align:center;margin-top:20px;">
+  <button onclick="resetAllProgress()" style="padding:8px 14px;background:#911;border:none;color:#fff;border-radius:6px;font-size:13px;">
+    Reset Game Progress
+  </button>
+</div>
+
+<script>
+function resetAllProgress() {
+  if (confirm("Are you sure you want to reset ALL game progress?")) {
+    // Clear all tracked missions
+    localStorage.removeItem("mission_rico");
+    localStorage.removeItem("mission_maya");
+    localStorage.removeItem("mission_lex");
+
+    // Clear NPC-specific stats
+    localStorage.removeItem("loyalty_rico");
+    localStorage.removeItem("loyalty_maya");
+    localStorage.removeItem("loyalty_lex");
+    localStorage.removeItem("rep_rico");
+    localStorage.removeItem("rep_maya");
+    localStorage.removeItem("rep_lex");
+
+    // Clear global stats
+    localStorage.removeItem("stats");
+    localStorage.removeItem("inventory");
+
+    // Reload the page
+    location.reload();
+  }
+}
+</script>
