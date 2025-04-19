@@ -1,0 +1,114 @@
+<!-- HustleTrap Inventory Page (No Preloaded Data) -->
+<div style="max-width:360px;margin:20px auto;padding:15px;background:#111;font-family:'Segoe UI',sans-serif;color:#fff;border-radius:12px;">
+  <h3 style="text-align:center;margin-bottom:10px;">Inventory</h3>
+  <div id="playerStats" style="font-size:13px;text-align:center;color:#aaa;margin-bottom:10px;"></div>
+  <div id="inventoryList" style="display:flex;flex-direction:column;gap:10px;"></div>
+  <div id="invMessage" style="margin-top:10px;font-size:13px;text-align:center;color:#f90;"></div>
+</div>
+
+<script>
+const itemIcons = {
+  "Weed": "🌿",
+  "Microdrop": "💧",
+  "Cash": "💵",
+  "Adderall": "💊",
+  "Scale": "⚖️",
+  "Backpack": "🎒",
+  "Knife": "🔪"
+};
+
+const itemRequirements = {
+  "Weed": { level: 1, xp: 0, rep: 0 },
+  "Microdrop": { level: 2, xp: 25, rep: 10 },
+  "Adderall": { level: 3, xp: 50, rep: 20 },
+  "Knife": { level: 2, xp: 20, rep: 5 },
+  "Scale": { level: 1, xp: 15, rep: 0 }
+};
+
+function getInventory() {
+  return JSON.parse(localStorage.getItem("inventory")) || [];
+}
+function saveInventory(inv) {
+  localStorage.setItem("inventory", JSON.stringify(inv));
+}
+function getStats() {
+  return JSON.parse(localStorage.getItem("stats")) || { xp: 0, rep: 0, cash: 0 };
+}
+function setStats(stats) {
+  localStorage.setItem("stats", JSON.stringify(stats));
+}
+function getLevel(xp) {
+  return Math.floor(xp / 10) + 1;
+}
+
+function renderInventory() {
+  const inv = getInventory();
+  const stats = getStats();
+  const level = getLevel(stats.xp);
+  const container = document.getElementById("inventoryList");
+  const message = document.getElementById("invMessage");
+  const playerStats = document.getElementById("playerStats");
+
+  container.innerHTML = "";
+  message.innerText = "";
+  playerStats.innerHTML = `Level: <strong>${level}</strong> | XP: ${stats.xp} | REP: ${stats.rep} | Cash: $${stats.cash}`;
+
+  if (inv.length === 0) {
+    container.innerHTML = "<p style='text-align:center;font-size:14px;'>Your bag is empty.</p>";
+    return;
+  }
+
+  inv.forEach((item, index) => {
+    const icon = itemIcons[item.name] || "❔";
+    const req = itemRequirements[item.name] || { level: 1, xp: 0, rep: 0 };
+    const canUse = level >= req.level && stats.xp >= req.xp && stats.rep >= req.rep;
+
+    const row = document.createElement("div");
+    row.style = "display:flex;flex-direction:column;gap:6px;background:#1c1c1c;padding:10px;border-radius:8px;";
+
+    row.innerHTML = `
+      <div style="font-size:16px;">${icon} <strong>${item.name}</strong> x${item.qty}</div>
+      <div style="display:flex;gap:10px;">
+        <button ${canUse ? "" : "disabled"} onclick="useItem(${index})" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#292;color:#fff;font-size:12px;">Use</button>
+        <button ${canUse ? "" : "disabled"} onclick="sellItem(${index})" style="flex:1;padding:4px 6px;border:none;border-radius:4px;background:#444;color:#fff;font-size:12px;">Sell</button>
+      </div>
+      ${!canUse ? `<div style="font-size:11px;color:#888;">Requires Level ${req.level}, ${req.xp} XP, ${req.rep} REP</div>` : ""}
+    `;
+    container.appendChild(row);
+  });
+}
+
+function useItem(index) {
+  const inv = getInventory();
+  const stats = getStats();
+  const level = getLevel(stats.xp);
+  const item = inv[index];
+  const req = itemRequirements[item.name] || { level: 1, xp: 0, rep: 0 };
+
+  if (level < req.level || stats.xp < req.xp || stats.rep < req.rep) return;
+
+  stats.xp += 2;
+  if (--item.qty <= 0) inv.splice(index, 1);
+  saveInventory(inv);
+  setStats(stats);
+  renderInventory();
+}
+
+function sellItem(index) {
+  const inv = getInventory();
+  const stats = getStats();
+  const level = getLevel(stats.xp);
+  const item = inv[index];
+  const req = itemRequirements[item.name] || { level: 1, xp: 0, rep: 0 };
+
+  if (level < req.level || stats.xp < req.xp || stats.rep < req.rep) return;
+
+  stats.cash += 50 * item.qty;
+  inv.splice(index, 1);
+  saveInventory(inv);
+  setStats(stats);
+  renderInventory();
+}
+
+document.addEventListener("DOMContentLoaded", renderInventory);
+</script>
